@@ -1,8 +1,9 @@
 # vocab
-test html5 game
+test html5 game: play at https://reagankan.github.io/vocab/
 
 test with tutorial game.
 https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript/Create_the_Canvas_and_draw_on_it
+
 ## Welcome to GitHub Pages
 
 You can use the [editor on GitHub](https://github.com/reagankan/vocab/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
