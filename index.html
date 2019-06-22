@@ -2,83 +2,58 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Gamedev Canvas Workshop</title>
+    <title>啊媽 Home Page</title>
     <style>
-    	* { padding: 0; margin: 0; }
-    	canvas { background: #eee; display: block; margin: 0 auto; }
+    	* {
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+        h1 {
+            font-size: 100px;
+        }
+        h2 {
+            margin-bottom: 3%;
+        }
+        div {
+            font-size: 50px;
+            height: 10%;
+            width: 25%;
+            float: center;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2%;
+            border: 1px solid black;
+            padding: 5%;
+        }
+        div.fire {
+            background-image: linear-gradient(yellow, red);
+        }
+        div.ice {
+            background-image: linear-gradient(aqua, blue);
+        }
     </style>
 </head>
 <body>
-
-<canvas id="myCanvas" width="480" height="320"></canvas>
+<h1> 啊媽 </h1>
+<h2> add instructions here. </h2>
+<div id="family" class="fire"> 認出家人 </div>
+<div id="vocab" class="ice"> 生字練習 </div>
 
 <script>
-
-var canvas = document.getElementById("myCanvas");
-var ctx = canvas.getContext("2d");
-
-
-class Empty { }
-let Movable = Base => class extends Base {
-    constructor() {
-        super();
-    }
-    move(obj) {
-        obj.x += obj.dx;
-        obj.y += obj.dy;
-    }
-};
-
-let Position = Base => class extends Base {
-    constructor() {
-        super();
-        this.set_xy(0, 0);
-        this.set_dxdy(0, 0);
-    }
-    set_x(x) {
-        this.x = x;
-    }
-    set_y(y) {
-        this.y = y;
-    }
-    set_xy(x, y) {
-        this.set_x(x);
-        this.set_y(y);
-    }
-    set_dx(dx) {
-        this.dx = dx;
-    }
-    set_dy(dy) {
-        this.dy = dy;
-    }
-    set_dxdy(dx, dy) {
-        this.set_dx(dx);
-        this.set_dy(dy);
-    }
-};
-
-class Ball extends Movable(Position(Empty)) {
-    constructor() {
-        super();
-        this.set_dxdy(10, 10);
-    }
-    draw() {
-        ctx.beginPath();
-        //ctx.arc(super.x, super.y, 10, 10, Math.PI*2);
-        ctx.arc(this.x, this.y, 10, 0, Math.PI*2);
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
-    }
+//game 1
+function sendToFamily() {
+    window.location.href = "family.html";
 }
+var fam = document.getElementById("family");
+fam.onclick = sendToFamily;
 
-var ball = new Ball();
-function main() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ball.draw();
-    ball.move(ball);
+//game 2
+function sendToVocab() {
+    window.location.href = "vocab.html";
 }
-setInterval(main, 10);
+var vocabulary = document.getElementById("vocab");
+vocabulary.onclick = sendToVocab;
 </script>
 
 </body>

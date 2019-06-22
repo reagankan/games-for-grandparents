@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="480" height="320"></canvas>
+<img id="scream" width="220" height="277" src="img.jpg" style="display: none;"> </img>
+<button id="next">Go to next page.</button>
+<script>
+
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+
+class Empty { }
+let Movable = Base => class extends Position(Base) {
+    constructor() {
+        super();
+    }
+    move() {
+        this.x += this.dx;
+        this.y += this.dy;
+    }
+};
+
+let Position = Base => class extends Base {
+    constructor() {
+        super();
+        this.set_xy(0, 0);
+        this.set_dxdy(0, 0);
+    }
+    set_x(x) {
+        this.x = x;
+    }
+    set_y(y) {
+        this.y = y;
+    }
+    set_xy(x, y) {
+        this.set_x(x);
+        this.set_y(y);
+    }
+    set_dx(dx) {
+        this.dx = dx;
+    }
+    set_dy(dy) {
+        this.dy = dy;
+    }
+    set_dxdy(dx, dy) {
+        this.set_dx(dx);
+        this.set_dy(dy);
+    }
+};
+
+class Image extends Movable(Empty) {
+    constructor(img, x, y) {
+        super();
+        this.set_xy(x, y);
+        this.img = img;
+    }
+    draw() {
+        ctx.drawImage(this.img, this.x, this.y);
+    }
+}
+var scream = new Image(document.getElementById("scream"), 30, 30);
+function main() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    scream.draw()
+    scream.set_dxdy(10, 10);
+    scream.move();
+    ctx.font = "52pt Tahoma"
+    ctx.fillText(scream.dx, 70, 330);
+}
+setInterval(main, 10);
+
+var buttons = document.getElementById('next');
+
+function next() {
+    window.location.href = "file:///Users/reagankan/Reagan_GT/summer2019/games/vocab/pages-test/char.html";
+}
+function moveScream() {
+    scream.set_dxdy(10, 10);
+    scream.move();
+}
+buttons.addEventListener('click', next, false);
+
+</script>
+
+</body>
+</html>

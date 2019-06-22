@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Canvas beginePath example</title>
+</head>
+<body>
+    <canvas id="demo" width="800" height="800"></canvas>
+    <script>
+        var x = 200;
+        var y = 200;
+        function move() {
+            x += 10;
+            y += 10;
+        }
+        function beginDemo() {
+            var canvas = document.getElementById("demo")
+            var ctx = canvas.getContext('2d');
+            ctx.font = "52pt 楷体";
+            ctx.fillText("字啊", x, y);
+            ctx.fillText("reagankan", 10, 70);
+            move();
+        }
+        setInterval(beginDemo, 10);
+    </script>
+</body>
+</html>

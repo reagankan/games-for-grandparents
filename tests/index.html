@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="480" height="320"></canvas>
+<img id="scream" width="220" height="277" src="images/img_the_scream.jpg" style="display: none;"> </img>
+
+<audio id="myAudio" src="http://jPlayer.org/tmp/countdown.mp3"></audio>
+<button data-start="18" data-stop="19">0</button>
+<button data-start="16" data-stop="17">1</button>
+<button data-start="14" data-stop="15">2</button>
+<button data-start="12" data-stop="13">3</button>
+<button data-start="10" data-stop="11">4</button>
+<button data-start="8"  data-stop="9">5</button>
+<button data-start="6"  data-stop="7">6</button>
+<button data-start="4"  data-stop="5">7</button>
+<button data-start="2"  data-stop="3">8</button>
+<button data-start="0"  data-stop="1">9</button>
+<script>
+
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+
+class Empty { }
+let Movable = Base => class extends Base {
+    constructor() {
+        super();
+    }
+    move(obj) {
+        obj.x += obj.dx;
+        obj.y += obj.dy;
+    }
+};
+
+let Position = Base => class extends Base {
+    constructor() {
+        super();
+        this.set_xy(0, 0);
+        this.set_dxdy(0, 0);
+    }
+    set_x(x) {
+        this.x = x;
+    }
+    set_y(y) {
+        this.y = y;
+    }
+    set_xy(x, y) {
+        this.set_x(x);
+        this.set_y(y);
+    }
+    set_dx(dx) {
+        this.dx = dx;
+    }
+    set_dy(dy) {
+        this.dy = dy;
+    }
+    set_dxdy(dx, dy) {
+        this.set_dx(dx);
+        this.set_dy(dy);
+    }
+};
+
+class Ball extends Movable(Position(Empty)) {
+    constructor() {
+        super();
+        this.set_dxdy(10, 10);
+    }
+    draw() {
+        ctx.beginPath();
+        //ctx.arc(super.x, super.y, 10, 10, Math.PI*2);
+        ctx.arc(this.x, this.y, 10, 0, Math.PI*2);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+    }
+}
+
+
+class Image extends Movable(Position(Empty)) {
+    constructor(img, x, y) {
+        super();
+        this.set_xy(x, y);
+        this.img = img;
+    }
+    draw() {
+        ctx.drawImage(this.img, this.x, this.y);
+    }
+}
+/*
+var image_dir = "images/";
+var image_files = ["img_the_scream.jpg"];
+function load_images() {
+    images = [];
+    for each (var fn in image_files) {
+        images.push(new Image(document.getElementById(fn)));
+    }
+    return images;
+}
+*/
+var ball = new Ball();
+var scream = new Image(document.getElementById("scream"), 30, 30);
+function main() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ball.draw();
+    ball.move(ball);
+    scream.draw()
+}
+setInterval(main, 10);
+
+var myAudio = document.getElementById('myAudio');
+var buttons = document.getElementsByTagName('button');
+var stopTime = 0;
+
+for (var i = 0; i < buttons.length; i++) {
+  buttons[i].addEventListener('click', function() {
+    myAudio.currentTime = this.getAttribute("data-start");
+    stopTime = this.getAttribute("data-stop");
+    myAudio.play();
+  }, false);
+}
+
+myAudio.addEventListener('timeupdate', function() {
+  if (this.currentTime > stopTime) {
+    this.pause();
+  }
+}, false);
+
+
+</script>
+
+</body>
+</html>
