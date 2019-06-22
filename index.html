@@ -13,14 +13,72 @@
 <canvas id="myCanvas" width="480" height="320"></canvas>
 
 <script>
-	// JavaScript code goes here
-        var canvas = document.getElementById("myCanvas");
-        var ctx = canvas.getContext("2d");
+
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+
+
+class Empty { }
+let Movable = Base => class extends Base {
+    constructor() {
+        super();
+    }
+    move(obj) {
+        obj.x += obj.dx;
+        obj.y += obj.dy;
+    }
+};
+
+let Position = Base => class extends Base {
+    constructor() {
+        super();
+        this.set_xy(0, 0);
+        this.set_dxdy(0, 0);
+    }
+    set_x(x) {
+        this.x = x;
+    }
+    set_y(y) {
+        this.y = y;
+    }
+    set_xy(x, y) {
+        this.set_x(x);
+        this.set_y(y);
+    }
+    set_dx(dx) {
+        this.dx = dx;
+    }
+    set_dy(dy) {
+        this.dy = dy;
+    }
+    set_dxdy(dx, dy) {
+        this.set_dx(dx);
+        this.set_dy(dy);
+    }
+};
+
+class Ball extends Movable(Position(Empty)) {
+    constructor() {
+        super();
+        this.set_dxdy(10, 10);
+    }
+    draw() {
         ctx.beginPath();
-        ctx.rect(20, 40, 50, 50);
-        ctx.fillStyle = "#FF0000";
+        //ctx.arc(super.x, super.y, 10, 10, Math.PI*2);
+        ctx.arc(this.x, this.y, 10, 0, Math.PI*2);
+        ctx.fillStyle = "#0095DD";
         ctx.fill();
         ctx.closePath();
+    }
+}
+
+var ball = new Ball();
+function main() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ball.draw();
+    ball.move(ball);
+}
+setInterval(main, 10);
 </script>
 
 </body>
