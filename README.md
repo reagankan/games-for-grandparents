@@ -1,7 +1,6 @@
-# vocab
-test html5 game: play at https://reagankan.github.io/vocab/
+# 阿公阿嬤的遊戲區
+play at https://reagankan.github.io/vocab/
 
-test with tutorial game.
 https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript/Create_the_Canvas_and_draw_on_it
 
 ## Welcome to GitHub Pages
