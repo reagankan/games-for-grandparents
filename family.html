@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>啊媽 Home Page</title>
+    <style>
+    	* {
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+        h1 {
+            font-size: 100px;
+        }
+        h2 {
+            margin-bottom: 3%;
+        }
+        div {
+            padding: 10px;
+            font-size: 50px;
+        }
+        div.submit {
+            background-color: silver;
+            width: 30%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        div.cancel {
+            background-color: silver;
+            width: 15%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 1%;
+        }
+        div.row {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            border-spacing: 10px;
+        }
+        div.column {
+            display: table-cell;
+        }
+        div.one {
+            background-image: linear-gradient(to right, firebrick, lightsalmon);
+        }
+        div.two {
+            background-image: linear-gradient(to right, orange, yellow);
+        }
+        div.three {
+            background-image: linear-gradient(to right, green, lime);
+        }
+        div.four {
+            background-image: linear-gradient(to right, dodgerblue, aqua);
+        }
+        img {
+            display: none;
+        }
+        canvas {
+            background-color: black;
+            width: 20%;
+        }
+    </style>
+</head>
+<body>
+<canvas id="myCanvas"></canvas>
+<h1 id="message"> 阿媽, 這是誰?</h1>
+<div class="row">
+<div id="0" class="column one"> one </div>
+<div id="1" class="column two"> two </div>
+<div id="2" class="column three"> three </div>
+<div id="3" class="column four"> four </div>
+</div>
+<div class="row">
+<div id="submit" class="submit"> OK </div>
+<div id="cancel" class="cancel"> cancel </div>
+</div>
+<!-- add photos here.  -->
+<!--
+    grandpa + grandma
+        judy
+        wen-jing + wenchih
+            reagan, ryan
+        wenching + drchen
+            alex, thomas, ?
+        ana + dorian
+            nia
+-->
+<img id="grandma" src="images/grandma.png"></img>
+<img id="grandpa" src="images/grandpa.png"></img>
+<img id="mom" src="images/mom.png"></img>
+<img id="dad" src="images/dad.png"></img>
+<img id="reagan" src="images/reagan.png"></img>
+<img id="ryan" src="images/ryan.png"></img>
+
+<script>
+var canvas = document.getElementById("myCanvas");
+phi = (1 + Math.sqrt(5))/2;
+canvas.height = canvas.width * phi;
+var ctx = canvas.getContext("2d");
+class Empty {}
+let Position = Base => class extends Base {
+    constructor() {
+        super();
+        this.set_xy(0, 0);
+        this.set_dxdy(0, 0);
+    }
+    set_x(x) {
+        this.x = x;
+    }
+    set_y(y) {
+        this.y = y;
+    }
+    set_xy(x, y) {
+        this.set_x(x);
+        this.set_y(y);
+    }
+    set_dx(dx) {
+        this.dx = dx;
+    }
+    set_dy(dy) {
+        this.dy = dy;
+    }
+    set_dxdy(dx, dy) {
+        this.set_dx(dx);
+        this.set_dy(dy);
+    }
+};
+class Image extends Position(Empty) {
+    constructor(id) {
+        super();
+        this.set_image(id);
+        this.set_xy(0, 0);
+    }
+    set_image(id) {
+        this.img = document.getElementById(id);
+    }
+    draw() {
+        ctx.drawImage(this.img, this.x, this.y, canvas.width, canvas.height);
+    }
+}
+
+class Person {
+    constructor(name, id) {
+        this.name = name;
+        this.id = id;
+        this.img = new Image(this.id);
+    }
+}
+family = []
+family.push(new Person("grandma", "grandma"));
+family.push(new Person("grandpa", "grandpa"));
+family.push(new Person("李文靜", "mom"));
+family.push(new Person("甘文智", "dad"));
+family.push(new Person("甘叡耕", "reagan"));
+family.push(new Person("甘叡耘", "ryan"));
+
+<!-- Random -->
+function random_index(len) {
+    return Math.floor(Math.random() * Math.floor(len));
+}
+function random_fam() {
+    return family[random_index(family.length)];
+}
+function random_four() {
+    var subset4 = Array.from(family);
+    var i;
+    while (subset4.length > 4) {
+        subset4.splice(random_index(subset4.length), 1);
+    }
+    return subset4;
+}
+
+<!-- Mystery Family Member-->
+var mystery = new Person("mystery", "mystery");
+function set_mystery(choices) {
+    mystery = choices[random_index(choices.length)];
+}
+
+<!-- Messages -->
+function reset_message() {
+    var message_obj = document.getElementById("message");
+    message_obj.style = "font-size: 100px; color: black";
+    message_obj.innerText = "阿媽, 這是誰?";
+}
+
+function correct_message(correct_name) {
+    var message_obj = document.getElementById("message");
+    message_obj.style = "font-size: 50px; color: green";
+    message_obj.innerText = "答案: " + correct_name;
+}
+
+function incorrect_message(correct_name) {
+    var message_obj = document.getElementById("message");
+    message_obj.style = "font-size: 50px; color: red";
+    message_obj.innerText = "答案: " + correct_name;
+}
+
+<!-- Buttons -->
+var submit = false;
+var selected = "none";
+function select(button) {
+    button.style.border = "10px solid teal"
+    selected = button.id;
+}
+function deselect(button) {
+    button.style.border = "none";
+}
+function button_behavior(e) {
+    var buttons = document.querySelectorAll(":scope .column");
+    for (var i = 0; i < buttons.length; i++) {
+        deselect(buttons[i]);
+    }
+    select(e.target);
+    submit = true;
+}
+function submit_behavior(e) {
+    if (submit == false) {
+        return;
+    }
+    //validate
+    var correct_name = mystery.name;
+    var selected_name = document.getElementById(selected).innerText;
+    var correct = correct_name == selected_name;
+    
+    //message
+    if (correct) {
+        correct_message(correct_name);
+        //go to next question here
+        window.setTimeout(setup_next_question, 2000);
+    } else {
+        incorrect_message(correct_name);
+    }
+}
+function cancel_behavior(e) {
+    var buttons = document.querySelectorAll(":scope .column");
+    for (var i = 0; i < buttons.length; i++) {
+        deselect(buttons[i]);
+    }
+    submit = false;
+    selected = "none";
+}
+
+<!-- Main -->
+function setup_next_question() {
+    reset_message();
+    //generate 4 choices
+    var choices = random_four();
+    set_mystery(choices);
+    mystery.img.draw();
+    
+    //update options  with label and actions
+    var buttons = document.querySelectorAll(":scope .column");
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].innerText = choices[i].name;
+        buttons[i].onclick = button_behavior;
+    }
+    
+    //set behavior of ok and cancel
+    var submit_button = document.getElementById("submit");
+    submit_button.onclick = submit_behavior;
+    var cancel_button = document.getElementById("cancel");
+    cancel_button.onclick = cancel_behavior;
+}
+
+
+window.onload = setup_next_question;
+var gameOver = false;
+</script>
+
+</body>
+</html>
