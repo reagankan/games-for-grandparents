@@ -218,11 +218,15 @@ function fill_choices(n) {
     while (choices.length > n) {
         choices.splice(random_index(choices.length), 1);
     }
-    //put mystery back in.
-    choices.push(mystery);
-    //shuffle choices
-    //since we just added answer to the back.
-    choices = shuffle(choices);
+    //shuffle is flawed.
+    //now randomly place mystery in 1 of 4 slots.
+    if (Math.random() < 0.75) {
+        var other_index = random_index(3);
+        choices.push(choices[other_index]);
+        choices[other_index] = mystery;
+    } else {
+        choices.push(mystery);
+    }
 }
 function shuffle(arr) {
     var curr = arr.length, temp, rand;
