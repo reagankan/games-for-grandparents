@@ -220,6 +220,9 @@ function fill_choices(n) {
     }
     //put mystery back in.
     choices.push(mystery);
+    //shuffle choices
+    //since we just added answer to the back.
+    choices = shuffle(choices);
 }
 function shuffle(arr) {
     var curr = arr.length, temp, rand;
