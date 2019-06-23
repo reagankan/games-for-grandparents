@@ -351,9 +351,8 @@ function setup_next_question() {
 
 
 function startup() {
-    window.setTimeout(setup_next_question, 0);
-    window.setTimeout(ask, 500);
-//    ask();
+    setup_next_question();
+    ask();
 }
 window.onload = startup;
 </script>
