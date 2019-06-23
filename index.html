@@ -13,6 +13,7 @@
             font-size: 100px;
         }
         h2 {
+            font-size: 75px;
             margin-bottom: 3%;
         }
         div {
@@ -35,11 +36,13 @@
     </style>
 </head>
 <body>
-<h1> 啊媽 </h1>
-<h2> add instructions here. </h2>
+<h1> [阿公] 阿嬤的遊戲 </h1>
+<h2> 請選一個遊戲</h2>
 <div id="family" class="fire"> 認出家人 </div>
-<div id="vocab" class="ice"> 生字練習 </div>
+<div id="vocab" class="ice"> ???  </div>
+<!--生字練習-->
 
+<audio id="welcome" src="audio/homepage_welcome.m4a"></audio>
 <script>
 //game 1
 function sendToFamily() {
@@ -54,6 +57,15 @@ function sendToVocab() {
 }
 var vocabulary = document.getElementById("vocab");
 vocabulary.onclick = sendToVocab;
+
+//welcome
+function welcome() {
+    document.getElementById("welcome").play();
+}
+function my_onload() {
+    window.setTimeout(welcome, 1000);
+}
+window.onload = my_onload;
 </script>
 
 </body>
