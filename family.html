@@ -79,6 +79,27 @@ redirect_from: "/vocab/"
 <div id="cancel" class="cancel"> 取消</div>
 </div>
 
+<!-- add audio here. -->
+<audio id="audiograndma" src="audio/grandma.m4a"></img>
+<audio id="audiograndpa" src="audio/grandpa.m4a"></img>
+
+<audio id="audiomom" src="audio/mom.m4a"></img>
+<audio id="audiodad" src="audio/dad.m4a"></img>
+<audio id="audioreagan" src="audio/reagan.m4a"></img>
+<audio id="audioryan" src="audio/ryan.m4a"></img>
+
+<audio id="audiojudy" src="audio/judy.m4a"></img>
+
+<audio id="audiowenching" src="audio/wenching.m4a"></img>
+<audio id="audiodrchen" src="audio/drchen.m4a"></img>
+<audio id="audioalex" src="audio/alex.m4a"></img>
+<audio id="audiothomas" src="audio/thomas.m4a"></img>
+<audio id="audiosmallone" src="audio/smallone.m4a"></img>
+
+<audio id="audioana" src="audio/ana.m4a"></img>
+<audio id="audiodorian" src="audio/dorian.m4a"></img>
+<audio id="audionia" src="audio/nia.m4a"></img>
+
 <!-- add photos here.  -->
 <img id="grandma" src="images/grandma.png"></img>
 <img id="grandpa" src="images/grandpa.png"></img>
@@ -175,6 +196,7 @@ family.push(new Person("多利安", "dorian"));
 family.push(new Person("Nia", "nia"));
 
 <!-- Random -->
+var choices = [];
 function random_index(len) {
     return Math.floor(Math.random() * Math.floor(len));
 }
@@ -182,17 +204,16 @@ function random_fam() {
     return family[random_index(family.length)];
 }
 function random_four() {
-    var subset4 = Array.from(family);
+    choices = Array.from(family);
     var i;
-    while (subset4.length > 4) {
-        subset4.splice(random_index(subset4.length), 1);
+    while (choices.length > 4) {
+        choices.splice(random_index(choices.length), 1);
     }
-    return subset4;
 }
 
 <!-- Mystery Family Member-->
 var mystery = new Person("mystery", "mystery");
-function set_mystery(choices) {
+function set_mystery() {
     mystery = choices[random_index(choices.length)];
 }
 
@@ -221,6 +242,17 @@ var selected = "none";
 function select(button) {
     button.style.border = "10px solid teal"
     selected = button.id;
+    
+    //get audio id
+    audio_id = "audio";
+    for (var i = 0; i < choices.length; i++) {
+        if (choices[i].name == button.innerText) {
+            audio_id += choices[i].id;
+            break;
+        }
+    }
+    var audio = document.getElementById(audio_id);
+    audio.play();
 }
 function deselect(button) {
     button.style.border = "none";
@@ -264,8 +296,8 @@ function cancel_behavior(e) {
 function setup_next_question() {
     reset_message();
     //generate 4 choices
-    var choices = random_four();
-    set_mystery(choices);
+    random_four();
+    set_mystery();
     mystery.img.draw();
     
     //update options  with label and actions
