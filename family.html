@@ -78,23 +78,27 @@ redirect_from: "/vocab/"
 <div id="submit" class="submit"> 確定 </div>
 <div id="cancel" class="cancel"> 取消</div>
 </div>
+
 <!-- add photos here.  -->
-<!--
-    grandpa + grandma
-        judy
-        wen-jing + wenchih
-            reagan, ryan
-        wenching + drchen
-            alex, thomas, ?
-        ana + dorian
-            nia
--->
 <img id="grandma" src="images/grandma.png"></img>
 <img id="grandpa" src="images/grandpa.png"></img>
+
 <img id="mom" src="images/mom.png"></img>
 <img id="dad" src="images/dad.png"></img>
 <img id="reagan" src="images/reagan.png"></img>
 <img id="ryan" src="images/ryan.png"></img>
+
+<img id="judy" src="images/judy.png"></img>
+
+<img id="wenching" src="images/wenching.png"></img>
+<img id="drchen" src="images/drchen.png"></img>
+<img id="alex" src="images/alex.png"></img>
+<img id="thomas" src="images/thomas.png"></img>
+<img id="smallone" src="images/smallone.png"></img>
+
+<img id="ana" src="images/ana.png"></img>
+<img id="dorian" src="images/dorian.png"></img>
+<img id="nia" src="images/nia.png"></img>
 
 <script>
 var canvas = document.getElementById("myCanvas");
@@ -151,12 +155,24 @@ class Person {
     }
 }
 family = []
-family.push(new Person("grandma", "grandma"));
+family.push(new Person("許美麗", "grandma"));
 family.push(new Person("grandpa", "grandpa"));
 family.push(new Person("李文靜", "mom"));
 family.push(new Person("甘文智", "dad"));
 family.push(new Person("甘叡耕", "reagan"));
 family.push(new Person("甘叡耘", "ryan"));
+
+family.push(new Person("李文惠", "judy"));
+
+family.push(new Person("李文晴", "wenching"));
+family.push(new Person("陳志恆", "drchen"));
+family.push(new Person("陳風宇", "alex"));
+family.push(new Person("李風廷", "thomas"));
+family.push(new Person("最小的表弟", "smallone"));
+
+family.push(new Person("Ana", "ana"));
+family.push(new Person("多利安", "dorian"));
+family.push(new Person("Nia", "nia"));
 
 <!-- Random -->
 function random_index(len) {
