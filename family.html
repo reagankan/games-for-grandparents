@@ -210,8 +210,10 @@ function random_fam() {
 }
 function fill_choices(n) {
     choices = Array.from(family);
-    //remove mystery
-    choices.splice(mysteryIndex, 1);
+    //remove mystery.
+    //i-1 since i always incremented
+    //after setting mystery
+    choices.splice(mysteryIndex - 1, 1);
     //choose n from remaining members.
     while (choices.length > n) {
         choices.splice(random_index(choices.length), 1);
