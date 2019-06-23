@@ -67,7 +67,7 @@ redirect_from: "/vocab/"
 </head>
 <body>
 <canvas id="myCanvas"></canvas>
-<h1 id="message"> 阿媽, 這是誰?</h1>
+<h1 id="message"> 阿嬤, 這是誰?</h1>
 <div class="row">
 <div id="0" class="column one"> one </div>
 <div id="1" class="column two"> two </div>
@@ -80,25 +80,26 @@ redirect_from: "/vocab/"
 </div>
 
 <!-- add audio here. -->
-<audio id="audiograndma" src="audio/grandma.m4a"></img>
-<audio id="audiograndpa" src="audio/grandpa.m4a"></img>
+<audio id="who" src="audio/who_is_this.m4a" autoplay=true></audio>
+<audio id="audiograndma" src="audio/grandma.m4a"></audio>
+<audio id="audiograndpa" src="audio/grandpa.m4a"></audio>
 
-<audio id="audiomom" src="audio/mom.m4a"></img>
-<audio id="audiodad" src="audio/dad.m4a"></img>
-<audio id="audioreagan" src="audio/reagan.m4a"></img>
-<audio id="audioryan" src="audio/ryan.m4a"></img>
+<audio id="audiomom" src="audio/mom.m4a"></audio>
+<audio id="audiodad" src="audio/dad.m4a"></audio>
+<audio id="audioreagan" src="audio/reagan.m4a"></audio>
+<audio id="audioryan" src="audio/ryan.m4a"></audio>
 
-<audio id="audiojudy" src="audio/judy.m4a"></img>
+<audio id="audiojudy" src="audio/judy.m4a"></audio>
 
-<audio id="audiowenching" src="audio/wenching.m4a"></img>
-<audio id="audiodrchen" src="audio/drchen.m4a"></img>
-<audio id="audioalex" src="audio/alex.m4a"></img>
-<audio id="audiothomas" src="audio/thomas.m4a"></img>
-<audio id="audiosmallone" src="audio/smallone.m4a"></img>
+<audio id="audiowenching" src="audio/wenching.m4a"></audio>
+<audio id="audiodrchen" src="audio/drchen.m4a"></audio>
+<audio id="audioalex" src="audio/alex.m4a"></audio>
+<audio id="audiothomas" src="audio/thomas.m4a"></audio>
+<audio id="audiosmallone" src="audio/smallone.m4a"></audio>
 
-<audio id="audioana" src="audio/ana.m4a"></img>
-<audio id="audiodorian" src="audio/dorian.m4a"></img>
-<audio id="audionia" src="audio/nia.m4a"></img>
+<audio id="audioana" src="audio/ana.m4a"></audio>
+<audio id="audiodorian" src="audio/dorian.m4a"></audio>
+<audio id="audionia" src="audio/nia.m4a"></audio>
 
 <!-- add photos here.  -->
 <img id="grandma" src="images/grandma.png"></img>
@@ -122,6 +123,10 @@ redirect_from: "/vocab/"
 <img id="nia" src="images/nia.png"></img>
 
 <script>
+//unknown reason: does not play at startup.
+function ask() {
+    document.getElementById("who").play();
+}
 var canvas = document.getElementById("myCanvas");
 phi = (1 + Math.sqrt(5))/2;
 canvas.height = canvas.width * phi;
@@ -203,25 +208,51 @@ function random_index(len) {
 function random_fam() {
     return family[random_index(family.length)];
 }
-function random_four() {
+function fill_choices(n) {
     choices = Array.from(family);
-    var i;
-    while (choices.length > 4) {
+    //remove mystery
+    choices.splice(mysteryIndex, 1);
+    //choose n from remaining members.
+    while (choices.length > n) {
         choices.splice(random_index(choices.length), 1);
     }
+    //put mystery back in.
+    choices.push(mystery);
+}
+function shuffle(arr) {
+    var curr = arr.length, temp, rand;
+    while (0 !== curr) {
+        //pick remaining elem
+        rand = Math.floor(Math.random() * curr);
+        curr -= 1;
+
+        //swap with curr elem
+        temp = arr[curr];
+        arr[curr] = arr[rand];
+        arr[rand] = temp;
+    }
+    return arr;
 }
 
 <!-- Mystery Family Member-->
 var mystery = new Person("mystery", "mystery");
+var mysteryIndex = 0;
 function set_mystery() {
-    mystery = choices[random_index(choices.length)];
+    while (mysteryIndex < family.length) {
+        mystery = family[mysteryIndex];
+        mysteryIndex++;
+        return;
+    }
+    family = shuffle(family);
+    mysteryIndex = 0;
 }
 
 <!-- Messages -->
 function reset_message() {
     var message_obj = document.getElementById("message");
     message_obj.style = "font-size: 100px; color: black";
-    message_obj.innerText = "阿媽, 這是誰?";
+    message_obj.innerText = "阿嬤, 這是誰?";
+    ask();
 }
 
 function correct_message(correct_name) {
@@ -283,7 +314,7 @@ function submit_behavior(e) {
         incorrect_message(correct_name);
     }
 }
-function cancel_behavior(e) {
+function reset_buttons() {
     var buttons = document.querySelectorAll(":scope .column");
     for (var i = 0; i < buttons.length; i++) {
         deselect(buttons[i]);
@@ -291,13 +322,17 @@ function cancel_behavior(e) {
     submit = false;
     selected = "none";
 }
+function cancel_behavior(e) {
+    reset_buttons();
+}
 
 <!-- Main -->
 function setup_next_question() {
+    reset_buttons();
     reset_message();
     //generate 4 choices
-    random_four();
     set_mystery();
+    fill_choices(3);
     mystery.img.draw();
     
     //update options  with label and actions
@@ -315,8 +350,12 @@ function setup_next_question() {
 }
 
 
-window.onload = setup_next_question;
-var gameOver = false;
+function startup() {
+    window.setTimeout(setup_next_question, 0);
+    window.setTimeout(ask, 2000);
+    ask();
+}
+window.onload = startup;
 </script>
 
 </body>
