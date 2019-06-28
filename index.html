@@ -39,7 +39,7 @@
 <h1> [阿公] 阿嬤的遊戲 </h1>
 <h2> 請選一個遊戲</h2>
 <div id="family" class="fire"> 認出家人 </div>
-<div id="vocab" class="ice"> ???  </div>
+<div id="game2" class="ice"> ???  </div>
 <!--生字練習-->
 
 <audio id="welcome" src="audio/homepage_welcome.m4a"></audio>
@@ -52,11 +52,11 @@ var fam = document.getElementById("family");
 fam.onclick = sendToFamily;
 
 //game 2
-function sendToVocab() {
-    window.location.href = "vocab.html";
+function sendToGame2() {
+    window.location.href = "2048.html";
 }
-var vocabulary = document.getElementById("vocab");
-vocabulary.onclick = sendToVocab;
+var vocabulary = document.getElementById("game2");
+vocabulary.onclick = sendToGame2;
 
 //welcome
 function welcome() {
