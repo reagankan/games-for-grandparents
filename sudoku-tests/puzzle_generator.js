@@ -30,10 +30,55 @@ function printPuzzle(v) {
     }
     print("=========================");
 }
-class Puzzle {
+class PuzzlePair {
     constructor() {
+        this.numFilled = 35;
+        this.numBlanks = 81 - this.numFilled;
+        this.answer = new Puzzle(new PuzzleSeed().puzzle);
+        this.answer.solve();
+
+        this.clonedBoard = this.cloneBoard(this.answer.myBoard);
+        this.incompletePuzzleSeed = this.makeBlanks(this.clonedBoard);
+        this.response = new Puzzle(this.incompletePuzzleSeed);
+        
+        this.answer.show();
+        this.response.show();
+    }
+    cloneBoard(board) {
+        return board.map(function(arr) { return arr.slice(); });
+    }
+    getRandomSubarray(arr, size) {
+        var shuffled = arr.slice(0), i = arr.length, temp, index;
+        while (i--) {
+            index = Math.floor((i + 1) * Math.random());
+            temp = shuffled[index];
+            shuffled[index] = shuffled[i];
+            shuffled[i] = temp;
+        }
+        return shuffled.slice(0, size);
+    }
+    range(n) {
+        var r = [];
+        for (var i = 0; i < n; i++) {
+            r.push(i);
+        }
+        return r;
+    }
+    makeBlanks(complete_board) {
+        var removeThese = this.getRandomSubarray(this.range(81), this.numBlanks);
+        for (var i = 0; i < removeThese.length; i++) {
+            var j = removeThese[i];
+            var row = Math.floor(j / 9);
+            var col = j % 9;
+            complete_board[row][col] = '.';
+        }
+        return complete_board;
+    }
+}
+class Puzzle {
+    constructor(puzzle_seed) {
         this.N = 0;
-        var board = new PuzzleSeed().puzzle;
+        var board = puzzle_seed;
         this.myBoard = board;
         this.rows = [];
         this.columns = [];
@@ -49,7 +94,6 @@ class Puzzle {
             }
         }
         print("Puzzle contructed");
-        this.solve();
     }
 
     setup_backend(n) {
@@ -144,9 +188,12 @@ class Puzzle {
     }
     solve() {
         this.backtrack(0, 0);
-        printPuzzle(this.myBoard);
+        //printPuzzle(this.myBoard);
         print("solved.");
         return this.myBoard;
+    }
+    show() {
+        printPuzzle(this.myBoard);
     }
 }
 
@@ -187,7 +234,7 @@ fillFirstRow(v) {
 }
 }
 function main() {
-    var solution = new Puzzle();
+    var solution = new PuzzlePair();
 }
 
 main()
