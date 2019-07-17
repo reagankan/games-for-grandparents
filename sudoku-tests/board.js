@@ -82,19 +82,33 @@ class Board{
         this.renderNumbers();
     }
     renderHighlight() {
-        this.highlightCurrentCell();
-    }
-    highlightCurrentCell() {
         let canvas = this.canvas;
         let context = this.context;
-        let x = this.currCol * canvas.width / 9;
-        let y = this.currRow * canvas.height / 9;
+
+        let r = this.currRow;
+        let c = this.currCol;
+
+        let x = c * canvas.width / 9;
+        let y = r * canvas.height / 9;
         
         let w = canvas.width / 9;
         let h = canvas.height / 9;
+
+        let oldLineWidth = context.lineWidth;
+        context.lineWidth = 7;
+        let oldStrokeStyle = context.strokeStyle;
         context.strokeStyle = "yellow";
-        context.strokeRect(x, y, w, h);
-        context.strokeStyle = "black";
+        context.strokeRect(x, y, w, h);//cell
+        context.strokeRect(0, y, canvas.width, h);//row
+        context.strokeRect(x, 0, w, canvas.height);//col
+
+        let nx = 3 * Math.floor(c/3);
+        nx = nx * canvas.width/9;
+        let ny = 3 * Math.floor(r/3);
+        ny = ny * canvas.height/9;
+        context.strokeRect(nx, ny, 3*w, 3*h);
+        context.strokeStyle = oldStrokeStyle;
+        context.lineWidth = oldLineWidth;
     }
     renderNumbers() {
         let response = this.response;
