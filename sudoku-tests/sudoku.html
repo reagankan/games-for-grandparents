@@ -14,10 +14,25 @@ canvas {
     margin-right: auto;
     display: block;
 }
+form, div {
+    margin: 0 auto;
+    width:250px;
+}
 </style>
 <title id="title">Sudoku</title>
 <canvas id="canvas" width="500" height="500" style="border: 1px solid"> </canvas>
-<h1 id="output"> </h1>
+
+<form id="form">clicking instructions here.</form>
+
+<div><!-- highlight row and col -->
+<input type="checkbox" id="highlight" value="highlight" checked>
+<label for="highlight">help</label>
+</div>
+
+<div><!-- change font color of selected to green(right) or red(wrong) -->
+<input type="checkbox" id="verify" value="highlight" checked>
+<label for="verify">verify</label>
+</div>
 </head>
 
 <body>
