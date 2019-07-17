@@ -39,6 +39,9 @@ function main() {
     if (!mouseAtDefault && highlight.checked) {
         board.renderHighlight();
     }
+    if (!mouseAtDefault && verify.checked) {
+        board.renderVerify();
+    }
 }
 window.onload = setup_board;
 window.setInterval(main, 1000);

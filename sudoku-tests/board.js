@@ -26,6 +26,7 @@ class Board{
 
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
+        this.context.font = "48px serif";
 
         this.mouseX = 0;
         this.mouseY = 0;
@@ -94,14 +95,23 @@ class Board{
         let w = canvas.width / 9;
         let h = canvas.height / 9;
 
+        //fill row + col
+        context.fillRect(0, y, canvas.width, h);//row
+        context.fillRect(x, 0, w, canvas.height);//col
+        let oldFillStyle = context.fillStyle;
+        context.fillStyle = "white";
+        context.fillRect(x, y, w, h);
+        context.fillStyle = oldFillStyle;
+        this.rewriteCoveredNumbers()
+
+        //outline box + cell
         let oldLineWidth = context.lineWidth;
         context.lineWidth = 7;
         let oldStrokeStyle = context.strokeStyle;
         context.strokeStyle = "yellow";
-        context.strokeRect(x, y, w, h);//cell
-        context.strokeRect(0, y, canvas.width, h);//row
-        context.strokeRect(x, 0, w, canvas.height);//col
-
+        //cell
+        context.strokeRect(x, y, w, h);
+        //box
         let nx = 3 * Math.floor(c/3);
         nx = nx * canvas.width/9;
         let ny = 3 * Math.floor(r/3);
@@ -109,6 +119,55 @@ class Board{
         context.strokeRect(nx, ny, 3*w, 3*h);
         context.strokeStyle = oldStrokeStyle;
         context.lineWidth = oldLineWidth;
+    }
+    rewriteCoveredNumbers() {
+        let context = this.context;
+        let oldFillStyle = context.fillStyle;
+        context.fillStyle = "white";
+        //row
+        for (let c = 0; c < 9; c++) {
+            if (c != this.currCol) {
+            this.renderGiven(this.response[this.currRow][c], this.currRow, c);
+            }
+        }
+        //col
+        for (let r = 0; r < 9; r++) {
+            if (r != this.currRow) {
+            this.renderGiven(this.response[r][this.currCol], r, this.currCol);
+            }
+        }
+        context.fillStyle = oldFillStyle;
+    }
+    //move content of this inside render given
+    //also only check for boolean verify if r, c == currR, currC. 
+    //////don't want to highlight all for now.???????  
+    ///LONG TERM. TWO VERIFIES. (all) + (just curr) + (none)
+    //inside here set a boolean. verify.
+    renderVerify() {
+        let canvas = this.canvas;
+        let context = this.context;
+
+        let r = this.currRow;
+        let c = this.currCol;
+
+        let x = c * canvas.width / 9;
+        let y = r * canvas.height / 9;
+        
+        let w = canvas.width / 9;
+        let h = canvas.height / 9;
+
+        let ans = this.answer[r][c];
+        let guess = this.response[r][c];
+        let correct = ans == guess;
+
+        let oldFillStyle = context.fillStyle;
+        if (correct) {
+            context.fillStyle = "green";
+        } else {
+            context.fillStyle = "red";
+        }
+        this.renderGiven(guess, r, c);
+        context.fillStyle = oldFillStyle;
     }
     renderNumbers() {
         let response = this.response;
@@ -128,8 +187,6 @@ class Board{
     }
     writeWithPencil(num) {
         let context = this.context;
-        context.fillStyle = "black";
-        context.font = "48px serif";
         //alert("num: " + num);
         let r = this.currRow;
         let c = this.currCol;
@@ -145,8 +202,6 @@ class Board{
     }
     renderGiven(num, r, c) {
         let context = this.context;
-        context.fillStyle = "black";
-        context.font = "48px serif";
         if (num == ".") {
             context.fillText("", this.colToX(c), this.rowToY(r));
         } else {
