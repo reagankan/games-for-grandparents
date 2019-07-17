@@ -21,12 +21,36 @@ class Board{
         this.answer = puzzlePair.answer.myBoard;
         this.response = puzzlePair.response.myBoard;
         this.response_copy = copy2D(this.response);
+        this.permanent_backend = copy2D(this.response_copy);
+        this.setup_permanent();
 
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
 
         this.mouseX = 0;
         this.mouseY = 0;
+        this.currRow = -1;
+        this.currCol = -1;
+    }
+/*    write(num) {
+        this.writeWithPencil(num, this.
+    }
+    */
+    setup_permanent() {
+        for (var r = 0; r < 9; r++) {
+            for (var c = 0; c < 9; c++) {
+                if (this.response[r][c] != ".") {
+                    this.permanent_backend[r][c] = "true";
+                } else {
+                    this.permanent_backend[r][c] = "false";
+                }
+            }
+        }
+    }
+    permanent() {
+        let p = this.permanent_backend[this.currRow][this.currCol] == "true";
+        alert("permanent: " + p);
+        return p;
     }
     clickHandler(x, y) {
         this.setMouse(x, y);
@@ -35,10 +59,12 @@ class Board{
         this.mouseX = x;
         this.mouseY = y;
         //alert("x: " + x + " y: " + y);
+        this.currRow = this.mouseRow();
+        this.currCol = this.mouseCol();
         var r = this.mouseRow();
         var c = this.mouseCol();
         alert("row: " + r + " col: " + c);
-        this.renderPencil("X", r, c); 
+        //this.writeWithPencil("X", r, c); 
     }
     mouseRow() {
         var row = Math.floor((this.mouseY)/(500/9))
@@ -54,6 +80,21 @@ class Board{
     render() {
         this.renderGridLines();
         this.renderNumbers();
+    }
+    renderHighlight() {
+        this.highlightCurrentCell();
+    }
+    highlightCurrentCell() {
+        let canvas = this.canvas;
+        let context = this.context;
+        let x = this.currCol * canvas.width / 9;
+        let y = this.currRow * canvas.height / 9;
+        
+        let w = canvas.width / 9;
+        let h = canvas.height / 9;
+        context.strokeStyle = "yellow";
+        context.strokeRect(x, y, w, h);
+        context.strokeStyle = "black";
     }
     renderNumbers() {
         let response = this.response;
@@ -71,15 +112,18 @@ class Board{
         let boxHeight = this.canvas.height/9
         return row * boxHeight + 45;
     }
-    renderPencil(num, r, c) {
+    writeWithPencil(num) {
         let context = this.context;
         context.fillStyle = "black";
         context.font = "48px serif";
         //alert("num: " + num);
+        let r = this.currRow;
+        let c = this.currCol;
         let original = this.response[r][c];
         alert("i was here: " + original);
         if (original != ".") {
             alert("already filled.");
+            this.response[r][c] = num;
         } else {
             this.response[r][c] = num;
         }
