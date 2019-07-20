@@ -1,44 +1,121 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html>
 <head>
-<meta charset="utf-8">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-<!-- Reagan's code starts here. -->
-<style>
-canvas {
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-}
-form, div {
-    margin: 0 auto;
-    width:250px;
-}
-</style>
+    <meta charset="utf-8" />
+    <title>數獨</title>
+    <style>
+    	* {
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+        h1 {
+            font-size: 100px;
+        }
+        h2 {
+            font-size: 75px;
+            margin-bottom: 3%;
+        }
+        div.start {
+            font-size: 50px;
+            height: 10%;
+            width: 25%;
+            float: center;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2%;
+            border: 1px solid black;
+            padding: 5%;
+        }
+        div.easy {
+            background-image: linear-gradient(green, limegreen);
+        }
+        div.medium {
+            background-image: linear-gradient(orangered, orange);
+        }
+        div.hard {
+            background-image: linear-gradient(darkred, red);
+        }
+        canvas {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+        form, div {
+            margin: 0 auto;
+            width:250px;
+        }
+        canvas.game, form.game, div.game {
+            display: none;
+        }
+    </style>
+</head>
+<body>
 <title id="title">Sudoku</title>
-<canvas id="canvas" width="500" height="500" style="border: 1px solid"> </canvas>
+<h1> 數獨 </h1>
+<h3 id="difficulty"></h3>
 
-<form id="form">clicking instructions here.</form>
+<!--Menu-->
+<h2 id="menu"> 難度選擇 </h2>
+<div id="easy" class="easy start"> 簡單 </div>
+<div id="medium" class="medium start"> 數獨 </div>
+<div id="hard" class="hard start"> 困難 </div>
 
-<div><!-- highlight row and col -->
+<!--Game-->
+<canvas class="game" id="canvas" width="500" height="500" style="border: 1px solid"> </canvas>
+<form class="game" id="form">clicking instructions here.</form>
+<div class="game" id="div1"><!-- highlight row and col -->
 <input type="checkbox" id="highlight" value="highlight" checked>
 <label for="highlight">help</label>
 </div>
-
-<div><!-- change font color of selected to green(right) or red(wrong) -->
+<div class="game" id="div2"><!-- change font color of selected to green(right) or red(wrong) -->
 <input type="checkbox" id="verify" value="highlight" checked>
 <label for="verify">verify</label>
 </div>
-</head>
 
-<body>
 <!-- import code in order. -->
 <script type="text/javascript" src="puzzle_generator.js"></script> 
 <script type="text/javascript" src="board.js"></script> 
 <script type="text/javascript" src="frontend.js"></script> 
+<!-- hide/show menu and game -->
+<script type="text/javascript">
+function switchToGame() {
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("easy").style.display = "none";
+    document.getElementById("medium").style.display = "none";
+    document.getElementById("hard").style.display = "none";
+
+    document.getElementById("canvas").style.display = "initial";
+    document.getElementById("form").style.display = "block";
+    document.getElementById("div1").style.display = "initial";
+    document.getElementById("div2").style.display = "initial";
+}
+function easy() {
+    switchToGame()
+    document.getElementById("difficulty").innerText = "選擇: 簡單"
+    alert("running")
+    run("easy")
+    alert("finished")
+}
+function medium() {
+    switchToGame()
+    document.getElementById("difficulty").innerText = "選擇: ??"
+    run("medium")
+}
+function hard() {
+    switchToGame()
+    document.getElementById("difficulty").innerText = "選擇: 困難"
+    run("hard")
+}
+document.getElementById("easy").onclick = easy
+document.getElementById("medium").onclick = medium
+document.getElementById("hard").onclick = hard
+</script>
+<script>
+    alert("t")
+    run("easy")
+</script>
 </body>
 </html>

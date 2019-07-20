@@ -5,9 +5,9 @@ var verify = document.getElementById("verify");
 
 var mouseAtDefault = true;
 
-var puzzlePair = new PuzzlePair();
 var board; 
-function setup_board() {
+function run(difficulty) {
+    var puzzlePair = new PuzzlePair(difficulty);
     board = new Board(canvas, puzzlePair);
     canvas.addEventListener("click", function(e) {
         mouseAtDefault = false;
@@ -48,6 +48,5 @@ function main() {
         }
     }
 }
-window.onload = setup_board;
+//window.onload = setup_board;
 window.setInterval(main, 1000);
-
