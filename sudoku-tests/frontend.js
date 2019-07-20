@@ -12,7 +12,7 @@ function setup_board() {
     canvas.addEventListener("click", function(e) {
         mouseAtDefault = false;
         board.setMouse(e.clientX-canvas.offsetLeft, e.clientY - canvas.offsetTop);
-        if (!board.permanent()) {
+        if (!board.currentlyOnPermanent()) {
             allowInput();
         }
         alert("highlight: " + highlight.checked)
@@ -23,12 +23,13 @@ form.addEventListener("submit", function(e) {
   e.preventDefault()
   let input = document.getElementById("number").value
   alert("submission: " + input);
-  board.writeWithPencil(input);
+  board.saveInput(input);
   alert("wrote with pencil");
   disallowInput()
 })
 function allowInput(){
   form.innerHTML = `<input id="number" type="text" autofocus="autofocus" name="number" value="" maxlength="1" pattern="[1-9]"><br> <input type="submit" value="Submit"> `
+  form.focus()
 }
 function disallowInput(){
   form.innerHTML = ""
@@ -39,8 +40,12 @@ function main() {
     if (!mouseAtDefault && highlight.checked) {
         board.renderHighlight();
     }
-    if (!mouseAtDefault && verify.checked) {
-        board.renderVerify();
+    if (!mouseAtDefault) {
+        if (verify.checked) {
+            board.verifyOn();
+        } else {
+            board.verifyOff();
+        }
     }
 }
 window.onload = setup_board;

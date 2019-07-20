@@ -26,17 +26,12 @@ class Board{
 
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
-        this.context.font = "48px serif";
 
         this.mouseX = 0;
         this.mouseY = 0;
         this.currRow = -1;
         this.currCol = -1;
     }
-/*    write(num) {
-        this.writeWithPencil(num, this.
-    }
-    */
     setup_permanent() {
         for (var r = 0; r < 9; r++) {
             for (var c = 0; c < 9; c++) {
@@ -48,10 +43,13 @@ class Board{
             }
         }
     }
-    permanent() {
-        let p = this.permanent_backend[this.currRow][this.currCol] == "true";
+    currentlyOnPermanent() {
+        let p = this.permanent(this.currRow, this.currCol)
         alert("permanent: " + p);
         return p;
+    }
+    permanent(r, c) {
+        return this.permanent_backend[r][c] == "true";
     }
     clickHandler(x, y) {
         this.setMouse(x, y);
@@ -65,7 +63,6 @@ class Board{
         var r = this.mouseRow();
         var c = this.mouseCol();
         alert("row: " + r + " col: " + c);
-        //this.writeWithPencil("X", r, c); 
     }
     mouseRow() {
         var row = Math.floor((this.mouseY)/(500/9))
@@ -95,14 +92,17 @@ class Board{
         let w = canvas.width / 9;
         let h = canvas.height / 9;
 
-        //fill row + col
+        //invert colors on row + col
         context.fillRect(0, y, canvas.width, h);//row
         context.fillRect(x, 0, w, canvas.height);//col
+        //do not invert curr cell.
         let oldFillStyle = context.fillStyle;
         context.fillStyle = "white";
         context.fillRect(x, y, w, h);
         context.fillStyle = oldFillStyle;
+        //color numbers with color opposite background
         this.rewriteCoveredNumbers()
+
 
         //outline box + cell
         let oldLineWidth = context.lineWidth;
@@ -137,14 +137,21 @@ class Board{
             }
         }
         context.fillStyle = oldFillStyle;
+        //current number is white, so is background.
+        //need to rewrite current number in black
+        this.renderGiven(this.response[this.currRow][this.currCol], this.currRow, this.currCol);
     }
     //move content of this inside render given
     //also only check for boolean verify if r, c == currR, currC. 
     //////don't want to highlight all for now.???????  
     ///LONG TERM. TWO VERIFIES. (all) + (just curr) + (none)
     //inside here set a boolean. verify.
-    renderVerify() {
-        let canvas = this.canvas;
+    verifyOff() {
+        this.verify = false;
+    }
+    verifyOn() {
+        this.verify = true;
+/*        let canvas = this.canvas;
         let context = this.context;
 
         let r = this.currRow;
@@ -167,7 +174,7 @@ class Board{
             context.fillStyle = "red";
         }
         this.renderGiven(guess, r, c);
-        context.fillStyle = oldFillStyle;
+        context.fillStyle = oldFillStyle;*/
     }
     renderNumbers() {
         let response = this.response;
@@ -177,15 +184,7 @@ class Board{
             }
         }
     }
-    colToX(col) {
-        let boxWidth = this.canvas.width/9
-        return col * boxWidth + 15;
-    }
-    rowToY(row) {
-        let boxHeight = this.canvas.height/9
-        return row * boxHeight + 45;
-    }
-    writeWithPencil(num) {
+    saveInput(num) {
         let context = this.context;
         //alert("num: " + num);
         let r = this.currRow;
@@ -203,10 +202,75 @@ class Board{
     renderGiven(num, r, c) {
         let context = this.context;
         if (num == ".") {
-            context.fillText("", this.colToX(c), this.rowToY(r));
+            this.ink(r, c, "")
+            //context.fillText("", this.colToX(c), this.rowToY(r));
         } else {
-            context.fillText(num, this.colToX(c), this.rowToY(r));
+            //check if permanent here.
+            if (this.permanent(r, c)) {
+                this.ink(r, c, num)
+            } else {
+                this.pencil(r, c, num)
+            }
         }
+    }
+    /*
+    colToX(col) {
+        let boxWidth = this.canvas.width/9
+        let x = col * boxWidth + 10;
+        return x
+    }
+    rowToY(row) {
+        let boxHeight = this.canvas.height/9
+        let y = row * boxHeight + 50;
+        return y
+    }
+    */
+    correct(r, c) {
+        let ans = this.answer[r][c];
+        let guess = this.response[r][c];
+        return ans == guess;
+    }
+    pencil(row, col, num) {
+        let context = this.context;
+        //save old style info
+        let oldFont = context.font;
+        let oldStyle = context.fillStyle;
+        //ink style
+        context.font = "bold 42pt serif";
+        context.fillStyle = "gray";
+        if (this.verify) {
+            if (this.correct(row, col)) {
+                context.fillStyle = "green";
+            } else {
+                context.fillStyle = "red";
+            }
+        }
+        //get x and y pos on canvas
+        let boxWidth = this.canvas.width/9
+        let boxHeight = this.canvas.height/9
+        let x = col * boxWidth + 15;
+        let y = row * boxHeight + 47;
+        context.fillText(num, x, y);
+        //revert to old style.
+        context.font = oldFont;
+        context.fillStyle = oldStyle;
+    }
+    ink(row, col, num) {
+        let context = this.context;
+        //save old style info
+        let oldFont = context.font;
+        let oldStyle = context.fillStyle;
+        //ink style
+        this.context.font = "48pt serif";
+        //get x and y pos on canvas
+        let boxWidth = this.canvas.width/9
+        let boxHeight = this.canvas.height/9
+        let x = col * boxWidth + 10;
+        let y = row * boxHeight + 50;
+        context.fillText(num, x, y);
+        //revert to old style.
+        context.font = oldFont;
+        context.fillStyle = oldStyle;
     }
     renderGridLines() {
         let canvas = this.canvas;
