@@ -18,14 +18,17 @@ function equal2D(one, two) {
 }
 class Board{
     constructor(canvas, puzzlePair){
+        alert("board constructor")
         this.answer = puzzlePair.answer.myBoard;
         this.response = puzzlePair.response.myBoard;
         this.response_copy = copy2D(this.response);
         this.permanent_backend = copy2D(this.response_copy);
         this.setup_permanent();
+        alert("backend setup.")
 
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
+        alert("backend setup.")
 
         this.mouseX = 0;
         this.mouseY = 0;
