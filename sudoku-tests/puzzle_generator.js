@@ -31,8 +31,17 @@ function printPuzzle(v) {
     print("=========================");
 }
 class PuzzlePair {
-    constructor() {
-        this.numFilled = 35;
+    constructor(difficulty) {
+        this.numFilled = 0;
+        if (difficulty == "easy") {
+            this.numFilled = 80;
+        } else if (difficulty == "medium") {
+            this.numFilled = 25;
+        } else if (difficulty == "hard") {
+            this.numFilled = 17;
+        } else {
+            this.numFilled = 25;
+        }
         this.numBlanks = 81 - this.numFilled;
         this.answer = new Puzzle(new PuzzleSeed().puzzle);
         this.answer.solve();
