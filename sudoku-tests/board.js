@@ -27,6 +27,9 @@ class Board{
         alert("backend setup.")
 
         this.canvas = canvas;
+        //this.canvas.addEventListener("resize", this.resizeCanvas, false);
+        //this.canvas.addEventListener("orientationchange", this.resizeCanvas, false);
+        //this.resizeCanvas();
         this.context = canvas.getContext("2d");
         alert("backend setup.")
 
@@ -34,6 +37,21 @@ class Board{
         this.mouseY = 0;
         this.currRow = -1;
         this.currCol = -1;
+    }
+    resizeCanvas() {
+        //this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+    gameOver() {
+        for (var i = 0; i < 9; i++) {
+            for (var j = 0; j < 9; j++) {
+                if (this.answer[i][j] != this.response[i][j]) {
+                    alert("not equal[" + i + "][" + j + "]: " + this.answer[i][j] + " " + this.response[i][j])
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     setup_permanent() {
         for (var r = 0; r < 9; r++) {
@@ -81,6 +99,23 @@ class Board{
     render() {
         this.renderGridLines();
         this.renderNumbers();
+
+        //cell
+        let canvas = this.canvas;
+        let context = this.context;
+        let oldLineWidth = context.lineWidth;
+        let oldStrokeStyle = context.strokeStyle;
+        context.lineWidth = 7;
+        context.strokeStyle = "yellow";
+        let r = this.currRow;
+        let c = this.currCol;
+        let x = c * canvas.width / 9;
+        let y = r * canvas.height / 9;
+        let w = canvas.width / 9;
+        let h = canvas.height / 9;
+        context.strokeRect(x, y, w, h);
+        context.strokeStyle = oldStrokeStyle;
+        context.lineWidth = oldLineWidth;
     }
     renderHighlight() {
         let canvas = this.canvas;
