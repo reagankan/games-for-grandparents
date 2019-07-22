@@ -18,20 +18,20 @@ function equal2D(one, two) {
 }
 class Board{
     constructor(canvas, puzzlePair){
-        alert("board constructor")
+        //alert("board constructor")
         this.answer = puzzlePair.answer.myBoard;
         this.response = puzzlePair.response.myBoard;
         this.response_copy = copy2D(this.response);
         this.permanent_backend = copy2D(this.response_copy);
         this.setup_permanent();
-        alert("backend setup.")
+        //alert("backend setup.")
 
         this.canvas = canvas;
         //this.canvas.addEventListener("resize", this.resizeCanvas, false);
         //this.canvas.addEventListener("orientationchange", this.resizeCanvas, false);
         //this.resizeCanvas();
         this.context = canvas.getContext("2d");
-        alert("backend setup.")
+        //alert("backend setup.")
 
         this.mouseX = 0;
         this.mouseY = 0;
@@ -46,7 +46,7 @@ class Board{
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
                 if (this.answer[i][j] != this.response[i][j]) {
-                    alert("not equal[" + i + "][" + j + "]: " + this.answer[i][j] + " " + this.response[i][j])
+                    //alert("not equal[" + i + "][" + j + "]: " + this.answer[i][j] + " " + this.response[i][j])
                     return false;
                 }
             }
@@ -66,7 +66,7 @@ class Board{
     }
     currentlyOnPermanent() {
         let p = this.permanent(this.currRow, this.currCol)
-        alert("permanent: " + p);
+        //alert("permanent: " + p);
         return p;
     }
     permanent(r, c) {
@@ -83,7 +83,7 @@ class Board{
         this.currCol = this.mouseCol();
         var r = this.mouseRow();
         var c = this.mouseCol();
-        alert("row: " + r + " col: " + c);
+        //alert("row: " + r + " col: " + c);
     }
     mouseRow() {
         var row = Math.floor((this.mouseY)/(500/9))
@@ -228,9 +228,9 @@ class Board{
         let r = this.currRow;
         let c = this.currCol;
         let original = this.response[r][c];
-        alert("i was here: " + original);
+        //alert("i was here: " + original);
         if (original != ".") {
-            alert("already filled.");
+            //alert("already filled.");
             this.response[r][c] = num;
         } else {
             this.response[r][c] = num;

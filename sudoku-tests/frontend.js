@@ -25,21 +25,21 @@ function run(difficulty) {
             allowInput();
             form.focus();
         }
-        alert("highlight: " + highlight.checked)
+        //alert("highlight: " + highlight.checked)
     });
     board.render();
 }
 form.addEventListener("submit", function(e) {
   e.preventDefault()
   let input = document.getElementById("number").value
-  alert("submission: " + input);
+  //alert("submission: " + input);
   board.saveInput(input);
-  alert("wrote with pencil");
+  //alert("wrote with pencil");
   disallowInput()
 
   //check for game over
   gameOver = board.gameOver();
-  alert(gameOver)
+  //alert(gameOver)
 })
 function allowInput(){
   form.innerHTML = `<input id="number" type="text" autofocus="autofocus" name="number" value="" maxlength="1" pattern="[1-9]"><br> <input type="submit" value="輸入"> `
