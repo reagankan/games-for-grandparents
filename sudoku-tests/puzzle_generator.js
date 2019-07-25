@@ -34,7 +34,7 @@ class PuzzlePair {
     constructor(difficulty) {
         this.numFilled = 0;
         if (difficulty == "easy") {
-            this.numFilled = 80;
+            this.numFilled = 40;
         } else if (difficulty == "medium") {
             this.numFilled = 25;
         } else if (difficulty == "hard") {
@@ -167,7 +167,11 @@ class Puzzle {
         if (this.myBoard[row][col] == '.') {
             //try all numbers
             //print("trying numbers");
-            for (var i = 1; i <= 9; i++) {
+            //TODO shuffle order of numbers to try
+            // this is to avoid lines like 1 2 3 6 4 5 7 8 9
+            var order = this.getTryOrder();
+            for (var index = 0; index < 9; index++) {
+                var i = order[index];
                 if (this.fillable(i, row, col)) {
                     //print("trying: "); this.printCell(i, row, col);
                     this.writeNumber(i, row, col);
@@ -194,6 +198,16 @@ class Puzzle {
         //cout << "cannot find any at: "; printCell('?', row, col);
         //print("cannot find any at: "); this.printCell('?', row, col);
         return false;
+    }
+    getTryOrder() {
+        var ret = [1,2,3, 4,5,6, 7,8,9]
+        var p = Math.random()
+        if (p < 0.33) {
+            return [1,4,7, 2,5,8, 3,6,9]
+        } else if (p < 0.66) {
+            return [1,4,7, 2,5,8, 3,6,9]
+        }
+        return [1,4,7, 2,5,8, 3,6,9]
     }
     solve() {
         this.backtrack(0, 0);
