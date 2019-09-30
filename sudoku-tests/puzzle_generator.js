@@ -74,6 +74,52 @@ class PuzzlePair {
         return r;
     }
     makeBlanks(complete_board) {
+        var choice = Math.random();
+        if (choice < 0.33) {
+            return this.makeBlanksVerticalProbe(complete_board);
+        } else if (choice < 0.66) {
+            return this.makeBlanksGridSearch(complete_board, 0);
+        } else if (choice < 0.33) {
+            return this.makeBlanksRandomSelection(complete_board);
+        }
+    }
+    makeBlanksVerticalProbe(complete_board) {
+        return this.makeBlanksGridSearch(complete_board, 0);
+        var blanksMade = 0;
+        var row = 0;
+        var col = Math.floor(Math.random() * 9);
+        while (blanksMade != this.numBlanks) {
+            if (complete_board[row][col] != '.') {
+                complete_board[row][col] = '.';
+                blanksMade += 1;
+                row = (row + 1) % 9;
+            }
+            col = Math.floor(Math.random() * 9);
+        }
+        return complete_board;
+    }
+    makeBlanksGridSearch(complete_board, blanksMade) {
+        for (var r = 0; r < 9; r +=3) {
+            for (var c = 0; c < 9; c +=3) {
+                var cellIndex = Math.floor(Math.random() * 9)
+                var dr = Math.floor(cellIndex / 3);
+                var dc = cellIndex % 3;
+                var row = r + dr;
+                var col = c + dc;
+                if (complete_board[row][col] != '.') {
+                    complete_board[row][col] = '.';
+                    blanksMade += 1;
+                    if (blanksMade == this.numBlanks) {
+                        return complete_board;
+                    }
+                } else {
+                    c -= 3;
+                }
+            }
+        }
+        return this.makeBlanksGridSearch(complete_board, blanksMade);
+    }
+    makeBlanksRandomSelection(complete_board) {
         var removeThese = this.getRandomSubarray(this.range(81), this.numBlanks);
         for (var i = 0; i < removeThese.length; i++) {
             var j = removeThese[i];
