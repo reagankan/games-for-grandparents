@@ -1,17 +1,25 @@
 //global variables
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext("2d");
-var speed = 3;
+var speed = 1;
 const dir = {
     UP : [0, -1],
     DOWN :[0, 1],
     LEFT :[-1, 0],
-    RIGHT : [1, 0]
+    RIGHT : [1, 0],
+    NONE : [0, 0]
 }
 
-//========experiment========
+//debug variables
+var debug = false;
+img_path = "pacman/imgs/pacman.png";
+if (debug) {
+    img_path = "imgs/pacman.png"
+}
+
+//========Movement========
 class GameObject extends Image {
-    constructor(src="pacman/imgs/pacman.png", h=100, w=100, s=speed, d=dir.UP) {
+    constructor(src=img_path, h=100, w=100, s=speed, d=dir.NONE) {
         super();
         super.src = src;
         this.h = h;
@@ -42,19 +50,30 @@ class ControlledGameObject extends GameObject {
         }
     }
 }
+//========end of movement========
 
 
-var pacman = new ControlledGameObject();
+//========experiment========
+/*
+    TODOS
+    1. keep pacman in "tracks"
+    2. blue ghosts
+    3. collision detection and gameOver()
+*/
+class Pacman extends ControlledGameObject {
+    constructor() {
+        super();
+    }
+}
+var pacman = new Pacman();
 document.addEventListener('keydown', pacman, false);
 //========end of experiments========
-
 
 
 //game control flow
 function gameOver() {
     return false;
 }
-
 
 //frontend helper methods
 function draw(obj) {
