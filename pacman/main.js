@@ -19,7 +19,7 @@ if (debug) {
 
 //========Movement========
 class GameObject extends Image {
-    constructor(src=img_path, h=100, w=100, s=speed, d=dir.NONE) {
+    constructor(src="imgs/pacman.png", h=100, w=100, s=speed, d=dir.NONE) {
         super();
         super.src = src;
         this.h = h;
