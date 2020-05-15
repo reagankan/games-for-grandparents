@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<!--
+Landing Page for Pacman Game.
+1. Defines necessary html elements.
+2. imports and 
+-->
+<html id="html">
+<head>
+    <meta charset="utf-8" />
+    <style>
+        html { 
+          background: url(imgs/pacman_menu_background.jpg) no-repeat center center fixed; 
+          -webkit-background-size: cover;
+          -moz-background-size: cover;
+          -o-background-size: cover;
+          background-size: cover;
+        }
+    	* {
+            padding: 0;
+            margin: 0;
+            text-align: center;
+            color: blue;
+        }
+        h1 {
+            font-size: 100px;
+        }
+        h2 {
+            font-size: 50px;
+            margin-bottom: 3%;
+        }
+        div.start {
+            font-size: 50px;
+            height: 10%;
+            width: 25%;
+            float: center;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2%;
+            border: 1px solid black;
+            padding: 5%;
+        }
+        div.easy {
+            background-image: linear-gradient(green, limegreen);
+            border: 10px solid black;
+            color: darkblue;
+        }
+        div.medium {
+            background-image: linear-gradient(orangered, orange);
+            color: darkblue;
+        }
+        div.hard {
+            background-image: linear-gradient(darkred, red);
+            color: darkblue;
+        }
+        canvas {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+        form, div {
+            margin: 0 auto;
+            width:250px;
+        }
+        canvas.game, form.game, div.game {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<title>Pacman</title> 
+<h1 id="title"> Pacman </h1>
+<h2 id="difficulty"></h2>
+
+<!--Menu-->
+<h2 id="menu"> Choose Map </h2>
+<div id="easy" class="easy start"> Map 1 </div>
+<div id="medium" class="medium start"> Map 2 </div>
+<div id="hard" class="hard start"> Map 3 </div>
+
+<!--Game-->
+<canvas class="game" id="canvas" width="500" height="500" style="border: 1px solid"> </canvas>
+<form class="game" id="form"> 1. 點一個單元格<br/>2. 輸入數字 </form>
+<div class="game" id="div1"><!-- highlight row and col -->
+<input type="checkbox" id="highlight" value="highlight">
+<label for="highlight">幫忙</label>
+</div>
+<div class="game" id="div2"><!-- change font color of selected to green(right) or red(wrong) -->
+<input type="checkbox" id="verify" value="verify">
+<label for="verify">答案</label>
+</div>
+<div id="restartButton" style="display: none"> restart </div>
+
+<!-- import code in order. -->
+<script type="text/javascript" src="puzzle_generator.js"></script> 
+<script type="text/javascript" src="board.js"></script> 
+<script type="text/javascript" src="main.js"></script> 
+<!-- hide/show menu and game -->
+<script type="text/javascript">
+function switchToGame() {
+    //vanishes menu graphics
+    document.getElementById("html").style.background = "none";
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("easy").style.display = "none";
+    document.getElementById("medium").style.display = "none";
+    document.getElementById("hard").style.display = "none";
+
+    //shows game graphics
+    document.getElementById("canvas").style.display = "initial";
+    document.getElementById("html").style.background = "black";
+    // document.getElementById("form").style.display = "block";
+    // document.getElementById("div1").style.display = "initial";
+    // document.getElementById("div2").style.display = "initial";
+}
+function easy() {
+    switchToGame()
+    document.getElementById("difficulty").innerText = "Beginner"
+    document.getElementById("difficulty").style.color = "yellow"
+    document.getElementById("title").style.color = "yellow"
+    //alert("running")
+    main()
+    //alert("finished")
+}
+function medium() {
+    switchToGame()
+    document.getElementById("difficulty").innerText = "Intermediate"
+    run("medium")
+}
+function hard() {
+    switchToGame()
+    document.getElementById("difficulty").innerText = "Expert"
+    run("hard")
+}
+document.getElementById("easy").onclick = easy
+</script>
+</body>
+</html>
