@@ -11,7 +11,7 @@ const dir = {
 
 //========experiment========
 class GameObject extends Image {
-    constructor(src="imgs/pacman.png", h=100, w=100, s=speed, d=dir.UP) {
+    constructor(src="pacman/imgs/pacman.png", h=100, w=100, s=speed, d=dir.UP) {
         super();
         super.src = src;
         this.h = h;
@@ -67,6 +67,6 @@ function main() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);  // clear canvas
       
       draw(pacman);
-      
+
       if (!gameOver()) requestAnimationFrame(main)        // loop
 }
