@@ -110,10 +110,8 @@ function switchToGame() {
     document.getElementById("hard").style.display = "none";
 
     //shows game graphics
-    w = COLS * PIX_PER_TILE;
-    h = ROWS * PIX_PER_TILE;
-    document.getElementById("canvas").width = w.toString(10);
-    document.getElementById("canvas").height = h.toString(10);
+    document.getElementById("canvas").width = W.toString(10);
+    document.getElementById("canvas").height = H.toString(10);
     document.getElementById("canvas").style.display = "initial";
     document.getElementById("html").style.background = "black";
     // document.getElementById("form").style.display = "block";
