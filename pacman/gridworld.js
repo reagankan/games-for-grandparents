@@ -115,7 +115,7 @@ const test_sp = new Map([
 						[dir.LEFT, [STARTR, 0]],
 						[dir.RIGHT, [STARTR, COLS - 1]]
 						]);
-var all_tracks = new Map(); //int -> Track obj();
+
 const POINT_RADIUS = 1; //inputs noted 1 tile before point. 
 class Point {
 	//Mainly for Stop/Exit points in a track.
@@ -140,8 +140,12 @@ class Point {
 		//return "Point: (" + this.r.toString(10) + ", " + this.c.toString(10) + ")";
 	}
 }
-var defaultPoints = new Array(new Point(STARTR, 0, false, -1, -1, true),
+var defaultPoints = new Array(new Point(STARTR, 0, true, -1, -1, true),
 							   new Point(STARTR, COLS-1, false, -1, -1, true));
+
+//TODO: do this track map thing.
+var all_tracks = new Map(); //int -> Track obj();
+
 class Track {
 	//w.r.t Coordinates, i.e. R, C pairs.
 	constructor(type=dir_types.HOR, points=defaultPoints) {

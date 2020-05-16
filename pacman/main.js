@@ -139,6 +139,9 @@ class Pacman extends GameObject {
         this.updateClosestPoint();
 
         this.turn = false;
+        this.moving = false;
+        this.skip = 0;
+        this.SKIP_TIME = 100;
         // alert(this.t);
     }
     move() {
@@ -158,11 +161,20 @@ class Pacman extends GameObject {
         msg += "Coor ("+ this.r + ", " + this.c + ")";
         msg += "</br>";
 
-        var targetPix = coor2Pix(this.r, this.c);
-        msg += "coor2Pix ("+ targetPix[0] + ", " + targetPix[0] + ")";
-        msg += "</br>";
+        // var targetPix = coor2Pix(this.r, this.c);
+        // msg += "coor2Pix ("+ targetPix[0] + ", " + targetPix[0] + ")";
+        // msg += "</br>";
 
         msg += "CP ("+ this.cp[0] + ", " + this.cp[1] + ")";
+        msg += "</br>";
+
+        msg += "moving: " + this.moving;
+        msg += "</br>";
+
+        msg += "cp is stop tile: " + this.t.points.get(this.cp).stop;
+        msg += "</br>";
+
+        msg += "temp_d: " + this.temp_d;
 
         output(msg);
     }
@@ -191,24 +203,36 @@ class Pacman extends GameObject {
     }
     updateDir() {
         //this is called every frame.
-        //TODO, if turn, wait until pixels match to turn.
-        // this.d = this.temp_d;
-        if (this.turn) {
-            //dirMatch not needed since we clear turn if we get a more recent command.
-            //BUT, compueDir is useful for reaching CP.
-            // if (!dirMatch()) {
-            //     this.turn = false;
-            // }
-            var targetPix = coor2Pix(this.cp[0], this.cp[1]);
-            if (this.reachCP(targetPix)) {
+        var targetPix = coor2Pix(this.cp[0], this.cp[1]);
+        var reachedCP = this.reachCP(targetPix);
+        var turn = this.turn;
+        var onStop = this.t.points.get(this.cp).stop;
+        this.skip += 1;
+        if (reachedCP) {
+            if (turn) {
+                //turn
                 this.d = this.temp_d;
 
                 this.X = targetPix[0];//[1];
                 this.Y = targetPix[1];//[1];
 
                 this.turn = false;
+            } else if (onStop && this.moving && this.skip > this.SKIP_TIME) {
+                this.temp_d = dir.NONE;
+                this.d = dir.NONE;
+
+                this.X = targetPix[0];//[1];
+                this.Y = targetPix[1];//[1];
+
+                this.moving = false;
+                this.skip = 0;
+            } else {
+                this.d = this.temp_d;
             }
+
+            
         } else {
+            //go forward backward along the track.
             this.d = this.temp_d;
         }
     }
@@ -247,9 +271,12 @@ class Pacman extends GameObject {
         let key = event.key;
         // alert(key);
         if (this.validCmdDetected(key)) {  //awsd or <^v>
+            this.moving = true;
             let newDir = allowedKeys.get(key);
+            alert(newDir)
+            alert("moving? : " + this.moving)
             if (this.turnRequested(newDir)) {
-                if (this.inRange()) {
+                if (this.t.points.get(this.cp).exit && this.inRange()) {
                     this.turn = true;
                     this.temp_d = newDir;
                     //TODO: update Track
