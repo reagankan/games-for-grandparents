@@ -119,7 +119,7 @@ const test_sp = new Map([
 const POINT_RADIUS = 1; //inputs noted 1 tile before point. 
 class Point {
 	//Mainly for Stop/Exit points in a track.
-	constructor(r, c, exit, d, t, stop) {
+	constructor(r, c, exit, d, t, stop, stopDir) {
 		//basic coor
 		this.r = r;
 		this.c = c;
@@ -131,6 +131,7 @@ class Point {
 
 		//stop
 		this.stop = stop;
+		this.stopDir = stopDir;
 	}
 	getR() {
 		return this.r;
@@ -140,8 +141,8 @@ class Point {
 		//return "Point: (" + this.r.toString(10) + ", " + this.c.toString(10) + ")";
 	}
 }
-var defaultPoints = new Array(new Point(STARTR, 0, true, -1, -1, true),
-							   new Point(STARTR, COLS-1, false, -1, -1, true));
+var defaultPoints = new Array(new Point(STARTR, 0, true, -1, -1, true, new Set([dir.LEFT])),
+							   new Point(STARTR, COLS-1, false, -1, -1, true, new Set([dir.RIGHT])));
 
 //TODO: do this track map thing.
 var all_tracks = new Map(); //int -> Track obj();

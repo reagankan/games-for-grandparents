@@ -17,6 +17,9 @@ if (debug) {
 function output(s) {
     document.getElementById("difficulty").innerHTML = s;
 }
+function appendOutput(s) {
+    document.getElementById("difficulty").innerHTML += s;
+}
 
 //========Movement========
 class GameObject extends Image {
@@ -169,13 +172,19 @@ class Pacman extends GameObject {
         msg += "CP ("+ this.cp[0] + ", " + this.cp[1] + ")";
         msg += "</br>";
 
-        msg += "moving: " + this.moving;
+        var dd = dist(this.cp, [this.r, this.c]);
+        msg += "dist: " + dd.toString(10) + "</br>";
+
+        /*msg += "moving: " + this.moving;
         msg += "</br>";
 
         msg += "cp is stop tile: " + this.t.points.get(this.cp).stop;
-        msg += "</br>";
+        msg += "</br>";*/
 
         msg += "temp_d: " + this.temp_d;
+        msg += "</br>";
+
+        
 
         output(msg);
     }
@@ -207,10 +216,17 @@ class Pacman extends GameObject {
         var targetPix = coor2Pix(this.cp[0], this.cp[1]);
         var reachedCP = this.reachCP(targetPix);
         var turn = this.turn;
-        var onStop = this.t.points.get(this.cp).stop;
+        var stopOnCP = this.t.points.get(this.cp).stop;
+        var blockedDir = this.t.points.get(this.cp).stopDir.has(this.temp_d);
         this.skip += 1;
-        if (reachedCP) {
-            if (turn) {
+
+
+        // var stopCond = this.temp_d != dir.NONE && this.d != dir.NONE && !this.turn_initiated;
+        var stopCond = this.d != dir.NONE && !this.turn_initiated;
+        appendOutput("StopCond: " + stopCond);
+
+        if (turn) {
+            if (reachedCP) {
                 //turn
                 this.d = this.temp_d;
 
@@ -220,29 +236,81 @@ class Pacman extends GameObject {
                 this.turn = false;
                 this.turn_initiated = true;
                 this.skip = 0;
-            } else if (onStop && this.temp_d != dir.NONE && this.d != dir.NONE && !this.turn_initiated) {// && this.skip > this.SKIP_TIME) {
-                if (this.temp_d != dir.NONE) {
-                    this.temp_d = dir.NONE;
-                }
-                if (this.d != dir.NONE) {
-                    this.d = dir.NONE;   
-                }
+            }
+        } else { //no commands(so stop) or parallel commands.
+            if (stopOnCP) { //need to stop if no commands detected.
+                if (reachedCP) { //pixels match, we are on this.cp;
+                    if (this.d != this.temp_d) { //detected commands. 
+                        //lookup stopDir/validDir, since we are on CP now.
+                        if (blockedDir) {
+                            //if in stop dir, need to stop.
+                            if (stopCond) {
+                                this.d = dir.NONE;
+                                // this.temp_d = dir.NONE;
 
-                this.X = targetPix[0];//[1];
-                this.Y = targetPix[1];//[1];
+                                this.X = targetPix[0];//[1];
+                                this.Y = targetPix[1];//[1];
 
-                this.moving = false;
-                // this.skip = 0;
-            } else {
+                                this.moving = false;
+                            } 
+                        } else {
+                            //o.w. proceed with update.
+                            this.d = this.temp_d;
+                        }
+
+                    } else { //no commands detected. so stop.
+                        if (stopCond) {
+                            this.d = dir.NONE;
+                            // this.temp_d = dir.NONE;
+
+                            this.X = targetPix[0];//[1];
+                            this.Y = targetPix[1];//[1];
+
+                            this.moving = false;
+                        } 
+                    }
+                } else {
+                    this.d = this.temp_d;
+                }
+            } else { //not a stop point, so proceed with update
                 this.d = this.temp_d;
             }
+        }
+
+        // if (reachedCP) {
+        //     if (turn) {
+        //         //turn
+        //         this.d = this.temp_d;
+
+        //         this.X = targetPix[0];//[1];
+        //         this.Y = targetPix[1];//[1];
+
+        //         this.turn = false;
+        //         this.turn_initiated = true;
+        //         this.skip = 0;
+        //     } else if (stopOnCP && this.temp_d != dir.NONE && this.d != dir.NONE && !this.turn_initiated) {// && this.skip > this.SKIP_TIME) {
+        //         if (this.temp_d != dir.NONE) {
+        //             this.temp_d = dir.NONE;
+        //         }
+        //         if (this.d != dir.NONE) {
+        //             this.d = dir.NONE;   
+        //         }
+
+        //         this.X = targetPix[0];//[1];
+        //         this.Y = targetPix[1];//[1];
+
+        //         this.moving = false;
+        //         // this.skip = 0;
+        //     } else {
+        //         this.d = this.temp_d;
+        //     }
 
             
-        } else {
-            //go forward backward along the track.
-            this.turn_initiated = false;
-            this.d = this.temp_d;
-        }
+        // } else {
+        //     //go forward backward along the track.
+        //     this.turn_initiated = false;
+        //     this.d = this.temp_d;
+        // }
     }
     updateClosestPoint() {
         var small_d = ROWS + COLS;
@@ -299,6 +367,7 @@ class Pacman extends GameObject {
                 // super.setTempD(newDir);
                 // super.setD(newDir);
             }
+            alert(this.temp_d)
             // if (super.allowedDir.has(tryDir)) {
             //     super.temp_d = tryDir; //tempDir overrides super.d in super.updateDir only if onTarget.
             // }
