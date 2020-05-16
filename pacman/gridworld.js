@@ -68,16 +68,95 @@ const base = {
 	ROW : "row",
 	COL : "col"
 }
+const dir = {
+    UP : [0, -1],
+    DOWN :[0, 1],
+    LEFT :[-1, 0],
+    RIGHT : [1, 0],
+    NONE : [0, 0],
+}
+const dir_types = {
+    HOR : "horizontal",
+    VER : "vertical"
+}
+const otherDirType = new Map([[dir_types.HOR, dir_types.VER], [dir_types.VER, dir_types.HOR]]);
+const parallel_dir = new Map([
+							[dir_types.HOR, new Set([dir.LEFT, dir.RIGHT, dir.NONE])],
+							[dir_types.VER, new Set([dir.UP, dir.DOWN, dir.NONE])]
+							]);
+const perpendicular_dir = new Map([
+							[dir_types.VER, new Set([dir.LEFT, dir.RIGHT])],
+							[dir_types.HOR, new Set([dir.UP, dir.DOWN])]
+							]);
 var test_exits = new Map([
 	[[STARTR, STARTC - 10], "Left Exit"],
 	[[STARTR, STARTC + 10], "Right Exit"]
 	]);
+
+const test_sp = new Map([
+						[dir.LEFT, [STARTR, 0]],
+						[dir.RIGHT, [STARTR, COLS - 1]]
+						]);
+var all_tracks = new Map(); //int -> Track obj();
+const POINT_RADIUS = 1; //inputs noted 1 tile before point. 
+class Point {
+	//Mainly for Stop/Exit points in a track.
+	constructor(r, c, exit, d, t, stop) {
+		//basic coor
+		this.r = r;
+		this.c = c;
+
+		//exit
+		this.exit = exit;
+		this.d = d; //dir
+		this.t = t; //track id.
+
+		//stop
+		this.stop = stop;
+	}
+	getR() {
+		return this.r;
+	}
+	toString() {
+		return this.exit;
+		//return "Point: (" + this.r.toString(10) + ", " + this.c.toString(10) + ")";
+	}
+}
+var defaultPoints = new Array(new Point(STARTR, 0, false, -1, -1, true),
+							   new Point(STARTR, COLS-1, false, -1, -1, true));
 class Track {
 	//w.r.t Coordinates, i.e. R, C pairs.
-	constructor(base=base.ROW, base_value=STARTR, exits=test_exits) {
-		this.base = base;
-		this.val = base_value;
-		this.exits = exits;
+	constructor(type=dir_types.HOR, points=defaultPoints) {
+		this.type = type;
+		this.points = new Map();
+		this.addPoints(points); //[R, C] -> Point() obj.
+	}
+	addPoints(pts) {
+		// let pt1 = pts[0];
+		// alert("point 1 toString()")
+		// alert(pt1)
+		// alert("point 1.r to String")
+		// alert(pt1.getR())
+		// alert("done")
+		for (var i = 0; i < pts.length; i++) {
+			// alert(pts[i]);
+			let coor = [pts[i].r.toString(10), pts[i].c.toString(10)]
+			// alert(coor);
+			this.points.set(coor, pts[i]);
+		}
+		// alert("printing first Point in defaultPoints")
+		// const iterator1 = this.points.keys();
+
+		// alert(iterator1.next().value);
+		// alert("refresh the page")
+		// alert(this.points[]);
+		// let it = this.points.keys();
+		// let result = it.next();
+		// while (!result.done) {
+		//  alert(result.value); // 1 3 5 7 9
+		//  result = it.next();
+		// }
+		// for (const pt of this.t.points.keys()) {
 	}
 }
 var test_track = new Track();
