@@ -51,6 +51,7 @@ function pix2Coor(x, y) {
 function coor2Pix(r, c) {
 	var lowX = c * PIX_PER_TILE;
 	var lowY = r * PIX_PER_TILE;
+	return [lowX, lowY]
 
 	var X = lowX + PIX_PER_TILE/2;
 	var Y = lowY + PIX_PER_TILE/2;
