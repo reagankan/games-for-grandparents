@@ -11,9 +11,11 @@ function createArray(length) {
     return arr;
 }
 
-function dist(p1, p2) {
-	// alert("in dist: p1 then p2")
-	// alert(p1)
-	// alert(p2)
-	return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1], p2[1]);
+function dist(p1, p2, debug=false) {
+	if (debug) {
+	alert("in dist: p1 then p2")
+	alert(p1)
+	alert(p2)
+	}
+	return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
 }

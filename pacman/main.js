@@ -35,6 +35,8 @@ class GameObject extends Image {
         let pix = coor2Pix(this.r, this.c);
         this.X = pix[0];//[1];
         this.Y = pix[1];//[1];
+        this.oldX = NaN;
+        this.oldY = NaN;
  
         this.d = d; //direction
         this.temp_d = d;
@@ -90,6 +92,8 @@ class GameObject extends Image {
     // }
     move() {
         // this.updateDir();
+        this.oldX = this.X;
+        this.oldY = this.Y;
         this.X += this.s * this.d[0];
         this.Y += this.s * this.d[1];
         this.updateCoor();
@@ -141,6 +145,7 @@ class Pacman extends GameObject {
         //this is called every frame
         this.updateDir();
         super.move();
+        this.updateClosestPoint();
 
         // var parent = super.getX().toString(10) + ", " + super.getY().toString(10);
         // var child = this.X.toString(10) + ", " + this.Y.toString(10);
@@ -155,24 +160,49 @@ class Pacman extends GameObject {
 
         var targetPix = coor2Pix(this.r, this.c);
         msg += "coor2Pix ("+ targetPix[0] + ", " + targetPix[0] + ")";
+        msg += "</br>";
+
+        msg += "CP ("+ this.cp[0] + ", " + this.cp[1] + ")";
 
         output(msg);
     }
-    dir2CP() {
-
+    dirMatch() {
+        return this.d == computeDir([this.r, this.c], this.cp);
     }
-    reachCP() {
-        return true;
+    reachCP(cpPix) {
+        var d = computeDir([this.r, this.c], this.cp);
+        var x = cpPix[0];
+        var y = cpPix[1];
+        // alert("computed dir")
+        // alert(d)
+        switch(d) {
+            case dir.UP:
+                return (this.Y <= y);
+            case dir.DOWN:
+                return (this.Y >= y);
+            case dir.LEFT:
+                return this.X <= x;
+            case dir.RIGHT:
+                return this.X >= x;
+            default:
+                return false; //this should not happen;
+        }
+        return false;  //this should not happen.
     }
     updateDir() {
         //this is called every frame.
         //TODO, if turn, wait until pixels match to turn.
         // this.d = this.temp_d;
         if (this.turn) {
-            if (this.reachCP()) {
+            //dirMatch not needed since we clear turn if we get a more recent command.
+            //BUT, compueDir is useful for reaching CP.
+            // if (!dirMatch()) {
+            //     this.turn = false;
+            // }
+            var targetPix = coor2Pix(this.cp[0], this.cp[1]);
+            if (this.reachCP(targetPix)) {
                 this.d = this.temp_d;
 
-                var targetPix = coor2Pix(this.cp[0], this.cp[1]);
                 this.X = targetPix[0];//[1];
                 this.Y = targetPix[1];//[1];
 
@@ -204,7 +234,9 @@ class Pacman extends GameObject {
         // alert("in range. curr RC then CP.")
         // alert([this.r, this.c])
         // alert(this.cp)
-        var d =  dist([this.r, this.c], this.cp) <= POINT_RADIUS;
+        var dd = dist([this.r, this.c], this.cp, true);
+        alert("Distance(curr, cp): " + dd.toString(10));
+        var d =  dd <= POINT_RADIUS;
         alert(d);
         return d;
     }

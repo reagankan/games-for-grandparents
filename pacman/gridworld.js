@@ -80,6 +80,23 @@ const dir_types = {
     HOR : "horizontal",
     VER : "vertical"
 }
+function computeDir(srcPt, dstPt) {
+	// if (srcPt[0] != dstPt[0] && srcPt[1] != dstPt[1]) {
+	// 	return [-1, -1]; //must be colinear???
+	// 	//or can we reuse for ghosts.
+	// }
+	if (srcPt[0] == dstPt[0]) { //rows eq, so either L or R.
+		if (srcPt[1] < dstPt[1]) {
+			return dir.RIGHT;
+		}
+		return dir.LEFT;
+	}
+	//we are here since cols eq, so moving row-wise. i.e. either U or D.
+	if (srcPt[1] < dstPt[1]) {
+		return dir.DOWN;
+	}
+	return dir.UP;
+}
 const otherDirType = new Map([[dir_types.HOR, dir_types.VER], [dir_types.VER, dir_types.HOR]]);
 const parallel_dir = new Map([
 							[dir_types.HOR, new Set([dir.LEFT, dir.RIGHT, dir.NONE])],
