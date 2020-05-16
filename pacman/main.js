@@ -142,6 +142,7 @@ class Pacman extends GameObject {
         this.moving = false;
         this.skip = 0;
         this.SKIP_TIME = 100;
+        this.turn_initiated = false;
         // alert(this.t);
     }
     move() {
@@ -217,15 +218,21 @@ class Pacman extends GameObject {
                 this.Y = targetPix[1];//[1];
 
                 this.turn = false;
-            } else if (onStop && this.moving && this.skip > this.SKIP_TIME) {
-                this.temp_d = dir.NONE;
-                this.d = dir.NONE;
+                this.turn_initiated = true;
+                this.skip = 0;
+            } else if (onStop && this.temp_d != dir.NONE && this.d != dir.NONE && !this.turn_initiated) {// && this.skip > this.SKIP_TIME) {
+                if (this.temp_d != dir.NONE) {
+                    this.temp_d = dir.NONE;
+                }
+                if (this.d != dir.NONE) {
+                    this.d = dir.NONE;   
+                }
 
                 this.X = targetPix[0];//[1];
                 this.Y = targetPix[1];//[1];
 
                 this.moving = false;
-                this.skip = 0;
+                // this.skip = 0;
             } else {
                 this.d = this.temp_d;
             }
@@ -233,6 +240,7 @@ class Pacman extends GameObject {
             
         } else {
             //go forward backward along the track.
+            this.turn_initiated = false;
             this.d = this.temp_d;
         }
     }
@@ -273,8 +281,8 @@ class Pacman extends GameObject {
         if (this.validCmdDetected(key)) {  //awsd or <^v>
             this.moving = true;
             let newDir = allowedKeys.get(key);
-            alert(newDir)
-            alert("moving? : " + this.moving)
+            // alert(newDir)
+            // alert("moving? : " + this.moving)
             if (this.turnRequested(newDir)) {
                 if (this.t.points.get(this.cp).exit && this.inRange()) {
                     this.turn = true;
