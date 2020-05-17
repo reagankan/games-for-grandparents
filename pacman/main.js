@@ -1,7 +1,6 @@
 //global variables
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext("2d");
-var speed = 1; // Thus, num frames to pass a tile = PIX_PER_TILE
 var pacman_files = new Map([[dir.NONE, "pacman-right.png"],
                             [dir.RIGHT, "pacman-right.png"],
                             [dir.LEFT, "pacman-left.png"],
@@ -73,17 +72,17 @@ class GameObject extends Image {
         let coor = pix2Coor(this.X, this.Y);
         this.r = coor[0];
         this.c = coor[1];
-        let out1 = "(" + this.r.toString(10) + ", " + this.c.toString(10) + ")";
-        let out2 = "(null, null)";
-        if (test_sp.has(this.d)) {
-            let stopCoor = test_sp.get(this.d);
-            let stopR = stopCoor[0];
-            let stopC = stopCoor[1];
-            out2 = "(" + stopR.toString(10) + ", " + stopC.toString(10) + ")"
-        }
+        // let out1 = "(" + this.r.toString(10) + ", " + this.c.toString(10) + ")";
+        // let out2 = "(null, null)";
+        // if (test_sp.has(this.d)) {
+        //     let stopCoor = test_sp.get(this.d);
+        //     let stopR = stopCoor[0];
+        //     let stopC = stopCoor[1];
+        //     out2 = "(" + stopR.toString(10) + ", " + stopC.toString(10) + ")"
+        // }
         
 
-        output(out1 + "-->" + out2);
+        // output(out1 + "-->" + out2);
     }
     // onTarget() {
     //     return true;
@@ -136,7 +135,7 @@ var allowedKeys = new Map([["w", dir.UP], ["a", dir.LEFT], ["s", dir.DOWN], ["d"
                             ["ArrowLeft", dir.LEFT], ["ArrowRight", dir.RIGHT]]);
 class Pacman extends GameObject {
     constructor(srcs=pacman_files, h=PIX_PER_TILE, w=PIX_PER_TILE,
-                r=STARTR, c=STARTC, s=speed, d=dir.NONE, t=test_track) {
+                r=STARTR, c=STARTC, s=SPEED, d=dir.NONE, t=test_track) {
         super(srcs, h, w, r, c, s, d, t);
         this.cp = new Array([0, 0]);
         this.updateClosestPoint();
@@ -334,10 +333,10 @@ class Pacman extends GameObject {
         // alert("in range. curr RC then CP.")
         // alert([this.r, this.c])
         // alert(this.cp)
-        var dd = dist([this.r, this.c], this.cp, true);
-        alert("Distance(curr, cp): " + dd.toString(10));
+        var dd = dist([this.r, this.c], this.cp, false);
+        // alert("Distance(curr, cp): " + dd.toString(10));
         var d =  dd <= POINT_RADIUS;
-        alert(d);
+        // alert(d);
         return d;
     }
     validCmdDetected(key) {
@@ -367,7 +366,7 @@ class Pacman extends GameObject {
                 // super.setTempD(newDir);
                 // super.setD(newDir);
             }
-            alert(this.temp_d)
+            // alert(this.temp_d)
             // if (super.allowedDir.has(tryDir)) {
             //     super.temp_d = tryDir; //tempDir overrides super.d in super.updateDir only if onTarget.
             // }
@@ -412,12 +411,28 @@ function draw(obj) {
     obj.move();
 }
 
+function drawWalls() {
+    ctx.fillStyle = 'darkblue';
+    for (var r = 0; r < ROWS; r++) {
+        for (var c = 0; c < COLS; c++) {
+            if (gridPoints[r][c].wall) {
+                let pix = coor2Pix(r, c);
+                let x = pix[0];
+                let y = pix[1];
+                ctx.fillRect(x, y, PIX_PER_TILE, PIX_PER_TILE);
+                // ctx.strokeRect(x, y, PIX_PER_TILE, PIX_PER_TILE);
+            }
+        }
+    }
+}
+
 //main loop
 // var timer = Timer();
 // maybe useful: https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
 function main() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);  // clear canvas
       
+      drawWalls();
       draw(pacman);
 
       // timer.sleep();
