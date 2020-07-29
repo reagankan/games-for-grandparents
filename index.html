@@ -36,13 +36,17 @@
     </style>
 </head>
 <body>
-<h1> [阿公] 阿嬤的遊戲 </h1>
+<h1> 阿公阿嬤的遊戲 </h1>
 <h2> 請選一個遊戲</h2>
+<audio id="welcome" controls>
+    <source src="audio/homepage_welcome.m4a">
+    <p>Your browser doesn't support HTML5 audio. Here is a <a href="homepage_welcome.m4a">link to the audio</a> instead.</p>
+</audio>
 <div id="family" class="fire"> 認出家人 </div>
 <div id="game2" class="ice"> 數獨 </div>
 <!--生字練習-->
 
-<audio id="welcome" src="audio/homepage_welcome.m4a"></audio>
+<!--<audio id="welcome" src="audio/homepage_welcome.m4a"></audio>-->
 <script>
 //game 1
 function sendToFamily() {
@@ -59,6 +63,7 @@ var vocabulary = document.getElementById("game2");
 vocabulary.onclick = sendToGame2;
 
 //welcome
+/*
 function welcome() {
     document.getElementById("welcome").play();
 }
@@ -66,6 +71,7 @@ function my_onload() {
     window.setTimeout(welcome, 1000);
 }
 window.onload = my_onload;
+*/
 </script>
 
 </body>
