@@ -95,7 +95,7 @@ redirect_from: "/vocab/"
 <audio id="audiodrchen" src="audio/drchen.m4a"></audio>
 <audio id="audioalex" src="audio/alex.m4a"></audio>
 <audio id="audiothomas" src="audio/thomas.m4a"></audio>
-<audio id="audiosmallone" src="audio/smallone.m4a"></audio>
+<audio id="audioleo" src="audio/leo.m4a"></audio>
 
 <audio id="audioana" src="audio/ana.m4a"></audio>
 <audio id="audiodorian" src="audio/dorian.m4a"></audio>
@@ -116,7 +116,7 @@ redirect_from: "/vocab/"
 <img id="drchen" src="images/drchen.png"></img>
 <img id="alex" src="images/alex.png"></img>
 <img id="thomas" src="images/thomas.png"></img>
-<img id="smallone" src="images/smallone.png"></img>
+<img id="leo" src="images/leo.png"></img>
 
 <img id="ana" src="images/ana.png"></img>
 <img id="dorian" src="images/dorian.png"></img>
@@ -194,13 +194,13 @@ family.push(new Person("李文晴", "wenching"));
 family.push(new Person("陳志恆", "drchen"));
 family.push(new Person("陳風宇", "alex"));
 family.push(new Person("李風廷", "thomas"));
-family.push(new Person("最小的表弟", "smallone"));
+family.push(new Person("陳風年", "leo"));
 
-family.push(new Person("李佳晏", "ana"));
-family.push(new Person("多利安", "dorian"));
+// family.push(new Person("李佳晏", "ana"));
+// family.push(new Person("多利安", "dorian"));
 family.push(new Person("李京郁", "nia"));
 
-<!-- Random -->
+// <!-- Random -->
 var choices = [];
 function random_index(len) {
     return Math.floor(Math.random() * Math.floor(len));
@@ -243,7 +243,7 @@ function shuffle(arr) {
     return arr;
 }
 
-<!-- Mystery Family Member-->
+// <!-- Mystery Family Member-->
 var mystery = new Person("mystery", "mystery");
 var mysteryIndex = 0;
 function set_mystery() {
@@ -256,7 +256,7 @@ function set_mystery() {
     mysteryIndex = 0;
 }
 
-<!-- Messages -->
+// <!-- Messages -->
 function reset_message() {
     var message_obj = document.getElementById("message");
     message_obj.style = "font-size: 100px; color: black";
@@ -276,7 +276,7 @@ function incorrect_message(correct_name) {
     message_obj.innerText = "答案: " + correct_name;
 }
 
-<!-- Buttons -->
+// <!-- Buttons -->
 var submit = false;
 var selected = "none";
 function select(button) {
@@ -335,7 +335,7 @@ function cancel_behavior(e) {
     reset_buttons();
 }
 
-<!-- Main -->
+// <!-- Main -->
 function setup_next_question() {
     reset_buttons();
     reset_message();
