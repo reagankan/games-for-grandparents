@@ -1,3 +1,12 @@
+//global variables
+// var canvas = document.getElementById('canvas');
+// var ctx = canvas.getContext("2d");
+// var pacman_files = new Map([[dir.NONE, "pacman-right.png"],
+//                             [dir.RIGHT, "pacman-right.png"],
+//                             [dir.LEFT, "pacman-left.png"],
+//                             [dir.UP, "pacman-up.png"],
+//                             [dir.DOWN, "pacman-down.png"]]);
+
 function createArray(length) {
 	//https://stackoverflow.com/questions/966225/how-can-i-create-a-two-dimensional-array-in-javascript
     var arr = new Array(length || 0),

@@ -1,39 +1,3 @@
-/*
-dimensions are based off of this: https://shaunlebron.github.io/pacman-mazegen/
-
-Map is 28x31 tiles.
-Paths are only 1 tile thick
-No sharp turns (i.e. intersections are separated by atleast 2 tiles).
-
-
-
-26 dots across a row
-
-
-IDEA:
-1. bijection pixel location to r,c coordinate
-2. use r,c to index into grid[r][c] = entity.
-3. update every few frames. use grid to make logic decisions? or use pixels??
-4. figure out way to tune speed and updates
-
-*/
-// const entity = {
-//     PACMAN : [0, -1],
-//     WALL :[0, 1],
-//     DOT :[-1, 0],
-//     GHOST : [1, 0],
-//     NONE : [0, 0]
-// }
-// class Grid {
-// 	constructor(n=28, m=31) {
-// 		this.n = n;
-// 		this.m = m;
-// 		this.grid = createArray(n, m);
-// 	}
-// }
-
-//bijection: pix(x, y) <--> coor(r, c)
-
 inputMap = new Array(
 //	"###########",
 	"#...##....#",
@@ -85,6 +49,14 @@ inputMap = new Array(
 	".##########.##.##########.",
 	"..........................");
 
+// inputMap = new Array(
+// 	"...",
+// 	".#.",
+// 	"...");
+
+// inputMap = new Array(
+// 	"..",
+// 	"..");
 
 const WALL = '#';
 function wrapWalls(input) {
@@ -106,8 +78,14 @@ inputMap = wrapWalls(inputMap);
 // MAX_AREA = 500 * 500;
 ROWS = inputMap.length; //31;
 COLS = inputMap[0].length;//28;
-PIX_PER_TILE = 150;
-const SPEED = Math.floor(PIX_PER_TILE/15); // Thus, num frames to pass a tile = PIX_PER_TILE
+// alert(Math.min(window.outerWidth, window.outerHeight))
+// alert(Math.max(ROWS, COLS))
+// alert(Math.min(window.outerWidth, window.outerHeight) / Math.max(ROWS, COLS))
+// alert(1024 / 31)
+PIX_PER_TILE = Math.floor(Math.min(window.outerWidth, window.outerHeight) / Math.max(ROWS, COLS)) * 2
+// alert(PIX_PER_TILE)
+
+const SPEED = PIX_PER_TILE/15; // Thus, num frames to pass a tile = PIX_PER_TILE
 
 
 W = COLS * PIX_PER_TILE;
@@ -136,7 +114,7 @@ function coor2Pix(r, c) {
 
 
 STARTR = 23;//16;
-STARTC = Math.floor(COLS/2);//14;
+STARTC = 15//Math.floor(COLS/2);//14;
 
 const base = {
 	ROW : "row",
@@ -205,8 +183,9 @@ class Point {
 		this.t = t; //track id.
 
 		//stop
+		// this is unique to direction
 		this.stop = stop;
-		this.stopDir = stopDir;
+		this.stopDir = stopDir; //deprecated
 
 		//wall
 		this.wall = w;
@@ -215,8 +194,8 @@ class Point {
 		return this.r;
 	}
 	toString() {
-		return this.exit;
-		//return "Point: (" + this.r.toString(10) + ", " + this.c.toString(10) + ")";
+		// return this.exit;
+		return "Point: (" + this.r.toString(10) + ", " + this.c.toString(10) + ")";
 	}
 }
 var defaultPoints = new Array(new Point(STARTR, 0, true, -1, -1, true, new Set([dir.LEFT])),
@@ -257,6 +236,28 @@ class Track {
 		//  result = it.next();
 		// }
 		// for (const pt of this.t.points.keys()) {
+	}
+	updateStopPoints(inputMap) {
+		// for (var pt of this.getPointObjects) {
+		// 	let dirs = parallel_dir.get(this.type) //set of directions parallel with HOR or VER
+		// 	for (var d of dirs) {
+		// 		//if moving in this d, hits a wall, then we want to stop.
+		// 	}
+		// }
+	}
+	getPointCoordinates() {
+		let pts = new Array()
+		for (const pt of this.points.keys()) {
+        	pts.push(pt)
+		}
+		return pts
+	}
+	getPointObjects() {
+		let pts = new Array()
+		for (const pt of this.points.values()) {
+        	pts.push(pt)
+		}
+		return pts
 	}
 	toString() {
 		var s = "[";
@@ -302,13 +303,13 @@ function numWalls(input, r, c) {
 	return count;
 }
 function hasParallelWalls(input, r, c) {
-	let top = addCoor([r, c], dir.UP);
-	let bot = addCoor([r, c], dir.DOWN);
+	let top = addCoor([r, c], [-1, 0]);
+	let bot = addCoor([r, c], [1, 0]);
 	let one = isWall(input, top[0], top[1]) && isWall(input, bot[0], bot[1]);
 	
-	let R = addCoor([r, c], dir.RIGHT);
-	let L = addCoor([r, c], dir.LEFT);
-	let two = isWall(input, R[0], R[1]) || isWall(input, L[0], L[1]);
+	let R = addCoor([r, c], [0, 1]);
+	let L = addCoor([r, c], [0, -1]);
+	let two = isWall(input, R[0], R[1]) && isWall(input, L[0], L[1]);
 
 	return (one || two) && (numWalls(input, r, c) % 2 == 0);
 }
@@ -318,6 +319,8 @@ function isExit(input, r, c) {
 	// msg += w;
 	// alert(msg);
 	switch(w) {
+		case 0:
+			return true;
 		case 1:
 			return true;
 		case 2:
@@ -351,14 +354,17 @@ function createPoints(input) {
 				let d = null; //dep on track type; getDir(input, r, c, exit); //maybe obsolete.
 				let t = null; //fill later
 
-				let stop = null; //dep on track type; isStop(input, r, c);
+				let stop = false; // assume false. toggle true when building tracks
 				let stopDir = getStopDir(input, r, c, stop);
 
 				let wall = false;
 
-				// let msg = "input[" + r.toString(10)+", "+c.toString(10)+"]: ";
-				// msg += exit;
-				// alert(msg);
+				// if (r == 23 && c == 21) {
+				// 	let msg = "Exit: input[" + r.toString(10)+", "+c.toString(10)+"]: ";
+				// 	msg += exit;
+				// 	alert(msg);
+				// }
+				
 
 				arr[r][c] = new Point(r, c,
 									exit=exit, d=d, t=t,
@@ -371,14 +377,15 @@ function createPoints(input) {
 }
 var gridPoints = createPoints(inputMap);
 
-
+// alert("(1, 1) has parallel walls: " +  hasParallelWalls(inputMap, 1, 1))
+// alert("(1, 1) num walls: " +  numWalls(inputMap, 1, 1))
 function isHorHead(input, r, c) {
 	let wall = isWall(input, r, c);
 
-	let lp = addCoor([r, c], dir.UP); //dir is Pix not Coor, so these are flipped.
+	let lp = addCoor([r, c], [0, -1]);
 	let leftWall = isWall(input, lp[0], lp[1]);
 
-	let rp = addCoor([r, c], dir.DOWN);
+	let rp = addCoor([r, c], [0, 1]);
 	let rightWall = isWall(input, rp[0], rp[1]);
 
 
@@ -394,10 +401,10 @@ function isHorHead(input, r, c) {
 function isHorTail(input, r, c) {
 	let wall = isWall(input, r, c);
 
-	let lp = addCoor([r, c], dir.UP);
+	let lp = addCoor([r, c], [0, -1]);
 	let leftWall = isWall(input, lp[0], lp[1]);
 
-	let rp = addCoor([r, c], dir.DOWN);
+	let rp = addCoor([r, c], [0, 1]);
 	let rightWall = isWall(input, rp[0], rp[1]);
 
 	return !leftWall && !wall && rightWall;
@@ -414,13 +421,27 @@ function getHorTracks(input, gridPoints) {
 			// msg += w;
 			
 			if (isHorHead(input, r, c)) {
-				t = new Track(dir_types.HOR, new Array(gridPoints[r][c]));
+
+				// set stop boolean
+				let headPt = gridPoints[r][c]
+				headPt.stop = true;
+				headPt.stopDir = dir.LEFT;
+				gridPoints[r][c] = headPt;
+
+				t = new Track(dir_types.HOR, new Array(headPt));
 				msg += "is head!!";
 				// alert(msg);
 			}
 			else if (isHorTail(input, r, c)) {
 				// alert(t.points)
-				t.points.set([[r],[c]], gridPoints[r][c]);
+
+				// set stop boolean
+				let tailPt = gridPoints[r][c]
+				tailPt.stop = true;
+				tailPt.stopDir = dir.RIGHT;
+				gridPoints[r][c] = tailPt;
+
+				t.points.set([r,c], tailPt);
 				horTracks.push(t);
 				t = null;
 				msg += "is tail!!";
@@ -430,7 +451,12 @@ function getHorTracks(input, gridPoints) {
 				msg += "is middle!!";
 				// alert(msg);
 				if (t != null) {
-					t.points.set([[r],[c]], gridPoints[r][c]);
+					t.points.set([r,c], gridPoints[r][c]);
+					if (r == 23 && c == 21) {
+						let msg = "Exit: gridPoints[" + r.toString(10)+", "+c.toString(10)+"]: ";
+						msg += gridPoints[r][c].exit;
+						alert(msg);
+					}
 				}
 			}
 		}
@@ -441,10 +467,10 @@ function getHorTracks(input, gridPoints) {
 function isVerHead(input, r, c) {
 	let wall = isWall(input, r, c);
 
-	let lp = addCoor([r, c], dir.LEFT); //dir is Pix not Coor, so these are flipped.
+	let lp = addCoor([r, c], [-1, 0]);
 	let leftWall = isWall(input, lp[0], lp[1]);
 
-	let rp = addCoor([r, c], dir.RIGHT);
+	let rp = addCoor([r, c], [1, 0]);
 	let rightWall = isWall(input, rp[0], rp[1]);
 
 
@@ -502,25 +528,38 @@ function getVerTracks(input, gridPoints) {
 			// }
 
 			if (isVerHead(input, r, c)) {
-				t = new Track(dir_types.VER, new Array(gridPoints[r][c]));
+				// set stop boolean
+				let headPt = gridPoints[r][c]
+				headPt.stop = true;
+				headPt.stopDir = dir.UP;
+				gridPoints[r][c] = headPt;
+
+				t = new Track(dir_types.VER, new Array(headPt));
 				msg += "is ver head!!";
 				// alert(msg);
 			}
 			else if (isVerTail(input, r, c)) {
 				// alert(t.points)
-				t.points.set([[r],[c]], gridPoints[r][c]);
+
+				// set stop boolean
+				let tailPt = gridPoints[r][c]
+				tailPt.stop = true;
+				tailPt.stopDir = dir.DOWN;
+				gridPoints[r][c] = tailPt
+
+				t.points.set([r,c], tailPt);
 				verTracks.push(t);
 				t = null;
 				msg += "is ver tail!!";
 			// 	if (r == 11 && c == 12) {
-			// 	alert(msg);
+				// alert(msg);
 			// }
 			}
 			else {
 				if (t != null) {
 					msg += "is ver middle!!";
 					// alert(msg);
-					t.points.set([[r],[c]], gridPoints[r][c]);
+					t.points.set([r,c], gridPoints[r][c]);
 				}
 			}
 		}
@@ -554,134 +593,146 @@ function getAllTracks(input, gridPoints) {
 	var tracks = new Map(); //int -> Track obj();
 	var id = 0;
 	while (id < h_tracks.length) {
+
 		tracks.set(id, h_tracks[id]);
+
+		// if (id < 3) {
+		// 	input = id + " : " + h_tracks[id]
+		// 	result = id + " : " + tracks.get(id)
+		// 	alert(input + "\n" + result)
+		// }
 		id += 1;
+
 	}
 	while (id < NUM_TRACKS) {
 		tracks.set(id, v_tracks[id - h_tracks.length]);
+		// if (id < h_tracks.length + 3) {
+		// 	input = id + " : " + v_tracks[id - h_tracks.length]
+		// 	result = id + " : " + tracks.get(id)
+		// 	alert(input + "\n" + result)
+		// }
 		id += 1;
 	}
+
+	// for (var track of tracks) {
+		// track.updateStopPoints(input)
+	// }
+
 	return tracks;
 }
 var all_tracks = getAllTracks(inputMap, gridPoints); //int -> Track obj();
-alert(all_tracks.size)
+
+var dir2coor2target = {}
+for (let d of Object.entries(dir)) {
+	let direction = d[1]
+	dir2coor2target[direction] = {}
+	for (let [tid, t] of all_tracks) {
+		let trackType = t.type
+		// console.log(Object.entries(t.points))
+		// console.log(t.points.values())
+		// console.log(t)
+
+		let points = Array.from(t.points.values())
+		let headPt = points[0]
+		let headCoord = [headPt.r, headPt.c]
+		let tailPt = points[points.length - 1]
+		let tailCoord = [tailPt.r, tailPt.c]
+
+
+		for (let coords of getRange(headCoord, tailCoord)) {
+			/** 
+
+			GIVEN: (1) direction 'direction'; (2) coordinate 'ptCoor'
+
+			(3) track type \in {dir_types.VER, dir_types.HOR}
+
+
+			FIND: targetCoordinates
+			i.e. 
+			agent is at 'ptCoor'
+			heading in 'direction'
+			which coordinate should it stop moving?
+			**/
+
+			if (coords in dir2coor2target[direction]) {
+				if (dir2coor2target[direction] !== null) {
+					// continue
+				}
+			}
+
+			targetCoord = null
+
+			if (trackType == dir_types.VER) {
+				// console.log("vertical track")
+				// console.log(t)
+				if (direction == dir.UP) {
+					targetCoord = headCoord
+				} else if (direction == dir.DOWN) {
+					targetCoord = tailCoord
+				} else if (direction == dir.NONE) {
+					targetCoord = coords
+				}
+			} else if (trackType == dir_types.HOR) {
+				if (direction == dir.LEFT) {
+					targetCoord = headCoord
+				} else if (direction == dir.RIGHT) {
+					targetCoord = tailCoord
+				} else if (direction == dir.NONE) {
+					targetCoord = coords
+				}
+			}
+			if (targetCoord == null) {
+				continue
+			}
+			dir2coor2target[direction][coords] = targetCoord
+
+		}
+		
+	}
+}
+
+console.log("dir2coor2target")
+console.log(dir2coor2target)
+
+
+
+function getClosestTrack(r, c, tracks=all_tracks) {
+	let closest = null
+	let min_dist = Number.MAX_SAFE_INTEGER
+	for ([track_id, track] of tracks) {
+		let new_dist = Number.MAX_SAFE_INTEGER
+		for (const pt of track.getPointObjects()) {
+			let val = Math.abs(pt.r - r) + Math.abs(pt.c - c)
+			new_dist = Math.min(new_dist, val)
+
+			let msg = ""
+			msg += "R, C : " + r + ", " + c + "\n"
+			msg += "PT: R, C : " + pt.r + ", " + pt.c + "\n"
+			msg += "new val: " + val + "\n"
+			msg += "new min dist: " + new_dist + "\n"
+		}
+		if (new_dist < min_dist) {
+			min_dist = new_dist
+			closest = track
+			// alert("min_dist: " + min_dist)
+		}
+	}
+	// alert("min_dist: " + min_dist)
+	return closest
+}
+// alert("Num Tracks: " + all_tracks.size)
 var test_track = all_tracks.get(0);
-alert(test_track.type)
-test_track = new Track();
-alert(test_track)
-// STARTR = test_track.points[0].r;
-// //Track ROW 1.
-// var cols = new Array(1, 6, 12, 15, 21, 26);
-// var trackID = new Array(2, 3, 4, 5, 6, 7);
-// var stopArr = new Array();
-// var stopDirArr = new Array(
-// 							new Set([dir.UP, dir.LEFT]),
-// 							new Set([dir.UP]),
-// 							new Set([dir.UP, dir.RIGHT]),
-
-// 							new Set([dir.UP, dir.LEFT]),
-// 							new Set([dir.UP]),
-// 							new Set([dir.UP, dir.RIGHT])
-// 							);
-// for (var i = 0; i < cols.length; i++) {
-// 	let c = cols[i];
-// 	let exit = true;
-// 	let t = trackID[i];
-// 	let stop = true;
-// 	let stopDir = stopDirArr[i];
-// 	gridPoints[1][c] = new Point(1, c,
-// 								 exit=exit,
-// 								 d=dir.DOWN,
-// 								 t=t,
-// 								 stop=stop,
-// 								 stopDir=stopDir)
-// }
-
-// //TODO: fill in
-// var track_lims = new Map([
-// 	[0, [[1,1], [1, 12]]],
-// 	[1, [[1,15], [1, 26]]],
-// 	[2, [[1,1], [8, 1]]],
-	
-// 	[3, [[1,6], [ROWS-5, 6]]], //start here.
-// 	[4, [[1,12], [5, 12]]],
-// 	[5, [[1,15], [5, 15]]],
-
-// 	[6, [[1,21], [ROWS-5, 21]]],
-// 	[7, [[1,1], [8, 12]]],   //start here.
-// 	[8, [[5,1], [5, COLS-2]]],
-
-// 	[9, [[5,9], [8, 9]]],
-// 	[10, [[5,18], [8, 18]]],
-// 	[11, [[8,1], [8, 6]]],
-
-// 	[12, [[8, 9], [8, 12]]], //start here.
-// 	[13, [[8,15], [8, 18]]],
-// 	[14, [[8,21], [8, 26]]],
-
-// 	[15, [[8,12], [10, 12]]], //
-// 	[16, [[8,15], [10, 15]]],
-// 	[17, [[8,1], [8, 18]]], //start here.
-
-// 	[18, [[8,1], [1, 12]]],//
-// 	[19, [[1,1], [1, 12]]],
-// 	[20, [[1,1], [1, 12]]],
-
-// 	[21, [[1,1], [1, 12]]],
-// 	[22, [[1,1], [1, 12]]],
-// 	[23, [[1,1], [1, 12]]],
-
-// 	[24, [[1,1], [1, 12]]],
-// 	[25, [[1,1], [1, 12]]],
-// 	[26, [[1,1], [1, 12]]],
-
-// 	[27, [[1,1], [1, 12]]],
-// 	[28, [[1,1], [1, 12]]],
-// 	[29, [[1,1], [1, 12]]],
-
-// 	[30, [[1,1], [1, 12]]],
-// 	[31, [[1,1], [1, 12]]],
-// 	[32, [[1,1], [1, 12]]],
-
-// 	[33, [[1,1], [1, 12]]],
-// 	[34, [[1,1], [1, 12]]],
-// 	[35, [[1,1], [1, 12]]],
-
-// 	[36, [[1,1], [1, 12]]],
-// 	[37, [[1,1], [1, 12]]],
-// 	[38, [[1,1], [1, 12]]],
-
-// 	[39, [[1,1], [1, 12]]],
-// 	[40, [[1,1], [1, 12]]],
-// 	[41, [[1,1], [1, 12]]],
-	
-// 	[42, [[ROWS-2, 1], [ROWS-2, COLS-2]]]
-// ]); //int -> [[R, C], [R, C]]
-
-// //TODO: verify this works.
-// //use gridPoints, track_lims, trackIDs to fill in all_tracks.
-// var NUM_TRACKS = 43;
-// var all_tracks = new Map(); //int -> Track obj();
-// for (var id = 0; id < NUM_TRACKS; id++) {
-// 	let type = dir_types.HOR;
-
-// 	let points = new Array();
-// 	if (track_lims.has(id)) {
-// 		let lims = track_lims.get(id);
-// 		let lo = lims[0]; let hi = lims[1];
-// 		let r = getRange(lo, hi);
-// 		for (var i = 0; i < r.length; i++) {
-// 			let coor = r[i];
-// 			let newPt = gridPoints[coor[0]][coor[1]];
-// 			if (newPt == null) { continue; }
-// 			points.push(newPt);
-// 		}
-// 	}
-	
-// 	all_tracks.set(id, new Track(type, points))
-// }
+// alert(test_track.type)
+// test_track = new Track();
+// alert(test_track)
+// alert(test_track.toString())
 
 
+let msg = "All Tracks\n"
+for ([track_id, track] of all_tracks) {
+	msg += track_id + " : " + track.toString() + "\n"
+}
+// alert(msg)
 
 
 

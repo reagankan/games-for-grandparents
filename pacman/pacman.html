@@ -98,8 +98,9 @@ Landing Page for Pacman Game.
 <!-- import code in order. -->
 <script type="text/javascript" src="utils.js"></script>
 <script type="text/javascript" src="gridworld.js"></script>
-<script type="text/javascript" src="main.js"></script> 
-<!-- hide/show menu and game -->
+<script type="text/javascript" src="main_summer2021.js"></script>
+<!-- <script type="text/javascript" src="main.js"></script> 
+ --><!-- hide/show menu and game -->
 <script type="text/javascript">
 function switchToGame() {
     //vanishes menu graphics
@@ -138,6 +139,9 @@ function hard() {
     run("hard")
 }
 document.getElementById("easy").onclick = easy
+
+switchToGame() // for debugging
+main()
 </script>
 </body>
 </html>
