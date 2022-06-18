@@ -1,3 +1,6 @@
+var player_has_2048 = false;
+var WIN_VALUE = 64
+
 function left_shift(arr) {
     var zerosOnRight = create_array(4);
     for (var i = 0; i < 4; i++) {
@@ -15,6 +18,9 @@ function left_shift(arr) {
 function merge_at(arr, i) {
 	if (arr[i] == arr[i+1] && arr[i] != 0) {
 	    arr[i] = arr[i] * 2;
+        if (arr[i] == WIN_VALUE) {
+            player_has_2048 = true;
+        }
 	    arr[i+1] = 0;
 	}
     return arr;
@@ -58,7 +64,6 @@ function move_up() {
         // merge and copy back to tiles
         var merged = do_merge(column);
         for (var r = 0; r < 4; r++) {
-            //tiles[i][c].set_next(merged[i]);
             tiles[r][c].set_value(merged[r]);
         }
 
@@ -91,6 +96,9 @@ function add_new_tile() {
             j += 1;
         }
     }
+    if (open.length == 0) {
+        return;
+    }
     var i = open[randint(open.length)];
     var r = Math.floor(i / 4);
     var c = i % 4;
@@ -102,6 +110,16 @@ function add_new_tile() {
     	console.log("adding new tile (4) to (" + i + ") [" + r + "][" + c + "]");
     }
 } 
+
+function get_values() {
+    let values = create_array(4, 4);
+    for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+            values[r][c] = tiles[r][c].value
+        }
+    }
+    return values
+}
 
 function move() {
     if (upPressed) {
@@ -129,14 +147,95 @@ function move() {
     setTimeout(turn_off_keys, 10)
 }
 
+function player_lost() {
+
+    let values = get_values()
+
+    // check for empty tiles
+    for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+            if (values[r][c] == 0) {
+                return false;
+            }
+        }
+    }
+
+    // move up or down
+    for (let r = 0; r < 4-1; r++) {
+        for (let c = 0; c < 4; c++) {
+            if (values[r][c] == values[r+1][c]) {
+                return false;
+            }
+        }
+    }
+
+    // move left or right
+    for (let c = 0; c < 4-1; c++) {
+        for (let r = 0; r < 4; r++) {
+            if (values[r][c] == values[r][c+1]) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 function main() {
 	move();
     print_tiles();
     // print(new Array([upPressed, downPressed, leftPressed, rightPressed]))
     draw_tiles();
+
+    if (player_has_2048) {
+
+        // background
+        document.getElementById("body").style = "background-color:yellow"
+
+        //uncover restart and continue buttons.
+        restartButton.style.display = "block";
+        // continueButton.style.display = "block";
+
+        //erase tile printout
+        document.getElementById("value").style.display = "none";
+
+        //message
+        document.getElementById("title").innerHTML = "You Win!"
+        document.getElementById("title").style.color = "grey"
+
+    } else if (player_lost()) {
+
+        // background
+        document.getElementById("body").style = "background-color:red"
+
+        //uncover restart button. that send to menu page
+        restartButton.style.display = "block";
+
+        //erase tile printout
+        document.getElementById("value").style.display = "none";
+
+        //message
+        document.getElementById("title").innerHTML = "You Lose!"
+        document.getElementById("title").style.color = "black"
+        /*
+        restartButton.style.font-size = "50px";
+        restartButton.style.height =  10%;
+        restartButton.style.width = 25%;
+        restartButton.style.float = "center";
+        restartButton.style.margin-left = "auto";
+        restartButton.style.margin-right = "auto";
+        restartButton.style.margin-bottom = "2%";
+        restartButton.style.border = "1px solid black";
+        restartButton.style.padding = "5%";
+        */
+    } 
 }
 function init() {
     init_tiles();
     setInterval(main, 100);
+
+    // move();
+    // draw_tiles();
+    // player_lost();
 }
 window.onload = init;
