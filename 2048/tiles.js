@@ -2,25 +2,27 @@ var tiles = create_array(4, 4);
 var tilesMoved = false;
 
 function init_tiles() {
-    var row = randint(4);
-    var col = randint(4);
+
+    // init empty
     for (var r = 0; r < 4; r++) {
         for (var c = 0; c < 4; c++) {
-            if (row == r && col == c) {
-                if (Math.random() < 0.5) {
-                    tiles[r][c] = new Tile("two", posX(r, c), posY(r, c), 2);
-                } else {
-                    tiles[r][c] = new Tile("four", posX(r, c), posY(r, c), 4);
-                }
-            } else {
-                if (Math.random() < 0.6) {
-                    tiles[r][c] = new Tile("empty", posX(r, c), posY(r, c), 0);
-                } else {
-                    tiles[r][c] = new Tile("two", posX(r, c), posY(r, c), 2);
-                }
-            }
+            tiles[r][c] = new Tile("empty", posX(r, c), posY(r, c), 0);
         }
     }
+
+    // pick two tiles
+    var n1 = randint(4*4);
+    var r = Math.floor(n1/4);
+    var c = n1 % 4;
+    tiles[r][c].set_value(Math.random() < 0.5 ? 2 : 4);
+
+    var n2 = randint(4*4);
+    while (n1 == n2) {
+        n2 = randint(4*4);
+    }
+    r = Math.floor(n2/4);
+    c = n2 % 4;
+    tiles[r][c].set_value(Math.random() < 0.5 ? 2 : 4);
 
     // test game over
     // var values = [
@@ -37,13 +39,18 @@ function init_tiles() {
     //     [16, 2048, 8, 16],
     //     [2, 4, 2, 4]
     // ];
+
+    // values = [
+    //     [0,0,0,0],
+    //     [0,0,0,0],
+    //     [4,2,4,2],
+    //     [2, 4, 2, 4]
+    // ];
     // for (var r = 0; r < 4; r++) {
     //     for (var c = 0; c < 4; c++) {
     //         tiles[r][c].set_value(values[r][c]);
     //     }
     // }
-
-    // print(r + ", " + c);
 }
 function draw_tiles() {
     let blank_img = new Image();

@@ -39,6 +39,8 @@ var valueToImgSrc = new Map([
     [512, "../images/tiles/five-one-two.png"],
     [1024, "../images/tiles/one-zero-two-four.png"],
     [2048, "../images/tiles/two-zero-four-eight.png"],
+    [4096, "../images/tiles/four-zero-nine-six.png"],
+    [8192, "../images/tiles/eight-one-nine-two.png"],
 ]);
 
 function create_array(length) {

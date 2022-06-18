@@ -1,3 +1,4 @@
+// user input: keys and touch-swipes
 var rightPressed = false;
 var leftPressed = false;
 var upPressed = false;
@@ -91,3 +92,23 @@ document.addEventListener('touchend', e => {
   touchendY = e.changedTouches[0].screenY
   checkDirection()
 })
+
+// restart and continue buttons
+var restart_button = document.getElementById("restartButton");
+restart_button.onclick = function () {
+    window.location.href = "2048.html";
+};
+var continue_button = document.getElementById("continueButton");
+continue_button.onclick = function () {
+    player_continues = true;
+    // reset background color
+    document.getElementById("body").style = "background-color: #F5F5DC"
+    // re-hide buttons
+    restartButton.style.display = "none";
+    continueButton.style.display = "none";
+    // reset title
+    document.getElementById("title").innerHTML = "2048"
+    document.getElementById("title").style.color = "black"
+    // unlock keys
+    KEYS_LOCKED = false;
+};

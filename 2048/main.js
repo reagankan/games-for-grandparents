@@ -1,5 +1,8 @@
 var player_has_2048 = false;
-var WIN_VALUE = 64
+var player_continues = false;
+var WIN_VALUE = 2048;
+var score = 0;
+var score_element = document.getElementById("score");
 
 function left_shift(arr) {
     var zerosOnRight = create_array(4);
@@ -15,13 +18,22 @@ function left_shift(arr) {
     }
     return zerosOnRight;
 }
+
+function update_score(new_points) {
+    score += new_points;
+    score_element.innerText = "Score: " + score;
+}
+
 function merge_at(arr, i) {
 	if (arr[i] == arr[i+1] && arr[i] != 0) {
 	    arr[i] = arr[i] * 2;
+	    arr[i+1] = 0;
+
+        update_score(arr[i]);
+
         if (arr[i] == WIN_VALUE) {
             player_has_2048 = true;
         }
-	    arr[i+1] = 0;
 	}
     return arr;
 }
@@ -52,23 +64,6 @@ function specialCase(a) {
     return (a[0] != 0 && a[1] != 0 && a[2] == 0 && a[3] != 0 && a[0] != a[1] && a[1] == a[3]);
 }
 
-// 0 4 2 2
-// 0 1 1 1 #count num zeros before i
-// 0 0 0 1 #count num merges (i-1, i) at i 
-// 0 1 1 2 #sum
-// 0 1 1 1 #max(0:i, i)
-
-// 2 2 2 2
-// 0 0 0 0 #count num zeros before i
-// 0 1 0 1 #count num merges (i-1, i) at i
-// 0 1 1 2 #count num merges (i-1, i) at i (cumulative max sum)
-// 4 4
-
-// 0 2 2 4
-// 0 1 1 1
-// 0 0 1 1
-// 0 1 2 2
-// 4 4 0 0 #shifted
 function shiftArray(curr_exp, next_exp) {
     if (specialCase(curr_exp)) {
         var special = create_array();
@@ -159,11 +154,10 @@ function move_up(true_direction) {
 
         // animate
         var shiftArr = shiftArray(column, copy_array(column));
-        console.log("column ", c, shiftArr)
         for (var i = 0; i < 4; i++) {
             var tile = tiles[i][c];
             if (shiftArr[i] != 0) {
-                // tile.set_moving(true);
+                tile.set_moving(true); // need for LOSE check
                 tile.set_direction(true_direction);
                 if (true_direction == UP) {
                     tile.set_dxdy(0, -35*i);
@@ -182,10 +176,7 @@ function move_up(true_direction) {
                 tile.transfer();
             }
         }
-        // movesCounter += tilesDidMove(shiftArr);
-        // //print("tilesMoved: " + movesCounter);
     }
-    // tilesMoved = movesCounter != 0;
 }
 
 function add_new_tile() {
@@ -193,23 +184,36 @@ function add_new_tile() {
     var j = 0
     for (var r = 0; r < 4; r++) {
         for (var c = 0; c < 4; c++) {
-            if (tiles[r][c].value == 0) {
+            let tile = tiles[r][c];
+            if (tile.moving && tile.next_value == 0) {
+                open.push(j);
+            } else if (!tile.moving && tile.value == 0) {
                 open.push(j);
             }
             j += 1;
         }
     }
     if (open.length == 0) {
+        // console.log("no open tiles", open, get_values());
         return;
     }
     var i = open[randint(open.length)];
     var r = Math.floor(i / 4);
     var c = i % 4;
+    var tile = tiles[r][c];
     if (Math.random() < 0.5) {
-    	tiles[r][c].set_value(2);
+        if (tile.moving) {
+            tiles[r][c].set_next(2);
+        } else {
+            tiles[r][c].set_value(2);
+        }
     	// console.log("adding new tile (2) to (" + i + ") [" + r + "][" + c + "]");
     } else {
-    	tiles[r][c].set_value(4);
+        if (tile.moving) {
+            tiles[r][c].set_next(4);
+        } else {
+            tiles[r][c].set_value(4);
+        }
     	// console.log("adding new tile (4) to (" + i + ") [" + r + "][" + c + "]");
     }
 } 
@@ -218,7 +222,7 @@ function get_values() {
     let values = create_array(4, 4);
     for (let r = 0; r < 4; r++) {
         for (let c = 0; c < 4; c++) {
-            values[r][c] = tiles[r][c].value
+            values[r][c] = tiles[r][c].moving ? tiles[r][c].next_value : tiles[r][c].value;
         }
     }
     return values
@@ -247,7 +251,7 @@ function move() {
         rotate_array(tiles, 1);
     	add_new_tile();
     }
-    setTimeout(turn_off_keys, 5)
+    setTimeout(turn_off_keys, 1)
 }
 
 function player_lost() {
@@ -287,7 +291,6 @@ function player_lost() {
 function main() {
 	move();
     print_tiles();
-    // print(new Array([upPressed, downPressed, leftPressed, rightPressed]))
     draw_tiles();
 
     for (let r = 0; r < 4; r++) {
@@ -296,14 +299,14 @@ function main() {
         }
     }
 
-    if (player_has_2048) {
+    if (player_has_2048 && !player_continues) {
 
         // background
-        document.getElementById("body").style = "background-color:yellow"
+        document.getElementById("body").style = "background-color: #FDFD96"
 
         //uncover restart and continue buttons.
         restartButton.style.display = "block";
-        // continueButton.style.display = "block";
+        continueButton.style.display = "block";
 
         //erase tile printout
         document.getElementById("value").style.display = "none";
@@ -316,8 +319,10 @@ function main() {
 
     } else if (player_lost()) {
 
+        console.log()
+
         // background
-        document.getElementById("body").style = "background-color:red"
+        document.getElementById("body").style = "background-color: #f2b195"
 
         //uncover restart button. that send to menu page
         restartButton.style.display = "block";
@@ -328,23 +333,13 @@ function main() {
         //message
         document.getElementById("title").innerHTML = "You Lose!"
         document.getElementById("title").style.color = "black"
-        /*
-        restartButton.style.font-size = "50px";
-        restartButton.style.height =  10%;
-        restartButton.style.width = 25%;
-        restartButton.style.float = "center";
-        restartButton.style.margin-left = "auto";
-        restartButton.style.margin-right = "auto";
-        restartButton.style.margin-bottom = "2%";
-        restartButton.style.border = "1px solid black";
-        restartButton.style.padding = "5%";
-        */
+
         KEYS_LOCKED = true;
     } 
 }
 function init() {
     init_tiles();
-    setInterval(main, 15);
+    setInterval(main, 20);
 
     // move();
     // draw_tiles();
