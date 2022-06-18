@@ -107,20 +107,20 @@ class Tile extends MyImage {
             //print("no direction");
         }
         if (this.moving) {
-        print("tile is moving " + this.value);
-        print("arrived: " + arrived);
-        print(this.dir);
-        print(this.x + ", " + this.y + " going to " + this.nx + ", " + this.ny);
+            print("tile is moving " + this.value);
+            print("arrived: " + arrived);
+            print(this.dir);
+            print(this.x + ", " + this.y + " going to " + this.nx + ", " + this.ny);
         }
         if (arrived) {
-        /*
-         * Transfer graphics. move back to old spot
-         * need func to reset xy given r, c index of tiles[][].
-         */
-        print("================================> Stopped.");
-        this.stop()
-        this.set_xy(this.rx, this.ry);
-        this.transfer();
+            /*
+             * Transfer graphics. move back to old spot
+             * need func to reset xy given r, c index of tiles[][].
+             */
+            print("================================> Stopped.");
+            this.stop()
+            this.set_xy(this.rx, this.ry);
+            this.transfer();
         }
     }
     get_image() {

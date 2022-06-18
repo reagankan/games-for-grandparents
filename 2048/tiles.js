@@ -22,9 +22,37 @@ function init_tiles() {
         }
     }
 
-    print(r + ", " + c);
+    // test game over
+    // var values = [
+    //     [4, 32, 16, 4],
+    //     [2, 16, 64, 2],
+    //     [16, 64, 8, 16],
+    //     [2, 4, 2, 4]
+    // ];
+
+    // // test 2048
+    // values = [
+    //     [4, 32, 16, 4],
+    //     [2, 16, 64, 2],
+    //     [16, 2048, 8, 16],
+    //     [2, 4, 2, 4]
+    // ];
+    // for (var r = 0; r < 4; r++) {
+    //     for (var c = 0; c < 4; c++) {
+    //         tiles[r][c].set_value(values[r][c]);
+    //     }
+    // }
+
+    // print(r + ", " + c);
 }
 function draw_tiles() {
+    let blank_img = new Image();
+    blank_img.src = valueToImgSrc.get(0);
+    for (var r = 0; r < 4; r++) {
+        for (var c = 0; c < 4; c++) {
+            ctx.drawImage(blank_img, posX(r, c), posY(r, c), 128, 128);
+        }
+    }
     for (var r = 0; r < 4; r++) {
         for (var c = 0; c < 4; c++) {
             tiles[r][c].draw(); 

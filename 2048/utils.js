@@ -1,7 +1,30 @@
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
+var restartButton = document.getElementById('restartButton');
+var continueButton = document.getElementById('continueButton');
+
+var UP = "Up";
+var DOWN = "Down";
+var LEFT = "Left";
+var RIGHT = "Right";
+
 
 var gameOver = false;
+
+var valueToId = new Map([
+    [0, "empty"],
+    [2, "two"],
+    [4, "four"],
+    [8, "eight"],
+    [16, "one-six"],
+    [32, "three-two"],
+    [64, "six-four"],
+    [128, "one-two-eight"],
+    [256, "two-five-six"],
+    [512, "five-one-two"],
+    [1024, "one-zero-two-four"],
+    [2048, "two-zero-four-eight"],
+]);
 
 var valueToImgSrc = new Map([
     [0, "../images/tiles/empty.png"],
@@ -28,6 +51,32 @@ function create_array(length) {
     }
 
     return arr;
+}
+
+function copy_array(arr) {
+    var len = 0;
+    for (let e of arr) {
+        len += 1;
+    }
+    var copy = create_array(len);
+    for (var i = 0; i < len; i++) {
+        copy[i] = arr[i];
+    }
+    return copy;
+}
+
+function array_equal_2d(one, two) {
+    for (let i = 0; i < one.length; i++) {
+        for (let j = 0; j < one[0].length; j++) {
+            if (one[i][j] !== two[i][j]) {
+                console.log("not equal at ["+i+"]["+j+"]: ", one[i][j], two[i][j])
+                console.log ("not equal one", one, one[i][j])
+                console.log ("not equal two", two, two[i][j])
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 function rotate_clockwise(a) {
