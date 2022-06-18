@@ -49,6 +49,10 @@
         canvas.game, form.game, div.game {
             display: none;
         }
+        /*lock screen*/
+        html.-is-locked {
+            overflow: hidden !important;
+        }
     </style>
 </head>
 <body id="body">
@@ -65,6 +69,11 @@
 <div id="continueButton" style="display: none"> continue </div>
 
 <!-- import code in order. -->
+<!-- lock screen -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    html.classList.add('-is-locked');
+</script>
 <script type="text/javascript" src="utils.js"></script>
 <script type="text/javascript" src="handler.js"></script>
 <script type="text/javascript" src="Tile.js"></script>
