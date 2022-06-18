@@ -36,20 +36,20 @@ let Movable = Base => class extends Position(Base) {
         this.y += this.dy;
     }
 };
-class Image extends Movable(Empty) {
-    constructor(id, x, y) {
+class MyImage extends Movable(Empty) {
+    constructor(src, x, y) {
         super();
         this.set_xy(x, y);
-        this.img = document.getElementById(id);
+        this.img = new Image();
+        this.img.src = src;
     }
     draw() {
         ctx.drawImage(this.img, this.x, this.y);
     }
 }
-class Tile extends Image {
+class Tile extends MyImage {
     constructor(id, x, y, value) {
-        super(valueToId.get(value), x, y);
-        print(valueToId.get(value));
+        super(valueToImgSrc.get(value), x, y);
         this.set_rxry(x, y);
         this.set_value(value);
         this.set_next(value);
@@ -124,13 +124,11 @@ class Tile extends Image {
         }
     }
     get_image() {
-        return document.getElementById(valueToId.get(this.value));
+        // console.log("value", this.value, "src", this.img.src);
+        this.img.src = valueToImgSrc.get(this.value);
+        return this.img;
     }
     draw() {
-        if (this.value != 0) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(this.get_image(), this.x, this.y, 128, 128);
-        }
-        //ctx.drawImage(this.img, this.x, this.y, 128, 128);
     }
 }

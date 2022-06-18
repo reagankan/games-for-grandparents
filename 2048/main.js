@@ -132,12 +132,11 @@ function move() {
 function main() {
 	move();
     print_tiles();
-    print(new Array([upPressed, downPressed, leftPressed, rightPressed]))
-    // drawTiles();
+    // print(new Array([upPressed, downPressed, leftPressed, rightPressed]))
+    draw_tiles();
 }
 function init() {
     init_tiles();
-    ctx.drawImage(document.getElementById("empty"), 0, 0, 512, 512);
     setInterval(main, 100);
 }
 window.onload = init;

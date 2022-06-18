@@ -3,19 +3,19 @@ var ctx = canvas.getContext("2d");
 
 var gameOver = false;
 
-var valueToId = new Map([
-	[0, "empty"],
-	[2, "two"],
-	[4, "four"],
-	[8, "eight"],
-	[16, "one-six"],
-	[32, "three-two"],
-	[64, "six-four"],
-	[128, "one-two-eight"],
-	[256, "two-five-six"],
-	[512, "five-one-two"],
-	[1024, "one-zero-two-four"],
-	[2048, "two-zero-four-eight"],
+var valueToImgSrc = new Map([
+    [0, "../images/tiles/empty.png"],
+    [2, "../images/tiles/two.png"],
+    [4, "../images/tiles/four.png"],
+    [8, "../images/tiles/eight.png"],
+    [16, "../images/tiles/one-six.png"],
+    [32, "../images/tiles/three-two.png"],
+    [64, "../images/tiles/six-four.png"],
+    [128, "../images/tiles/one-two-eight.png"],
+    [256, "../images/tiles/two-five-six.png"],
+    [512, "../images/tiles/five-one-two.png"],
+    [1024, "../images/tiles/one-zero-two-four.png"],
+    [2048, "../images/tiles/two-zero-four-eight.png"],
 ]);
 
 function create_array(length) {
