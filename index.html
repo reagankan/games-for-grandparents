@@ -33,6 +33,9 @@
         div.ice {
             background-image: linear-gradient(aqua, blue);
         }
+        div.grass {
+            background-image: linear-gradient(yellow, green);
+        }
     </style>
 </head>
 <body>
@@ -44,6 +47,7 @@
 </audio>
 <div id="family" class="fire"> 認出家人 </div>
 <div id="game2" class="ice"> 數獨 </div>
+<div id="2048" class="grass"> 2048 </div>
 <!--生字練習-->
 
 <!--<audio id="welcome" src="audio/homepage_welcome.m4a"></audio>-->
@@ -61,6 +65,13 @@ function sendToGame2() {
 }
 var vocabulary = document.getElementById("game2");
 vocabulary.onclick = sendToGame2;
+
+//game 3
+function sendTo2048() {
+    window.location.href = "2048/2048.html";
+}
+var game2048 = document.getElementById("2048");
+game2048.onclick = sendTo2048;
 
 //welcome
 /*
