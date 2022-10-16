@@ -48,6 +48,7 @@
 <div id="family" class="fire"> 認出家人 </div>
 <div id="game2" class="ice"> 數獨 </div>
 <div id="2048" class="grass"> 2048 </div>
+<div id="flappy-bird" class="fire"> flappy bird </div>
 <!--生字練習-->
 
 <!--<audio id="welcome" src="audio/homepage_welcome.m4a"></audio>-->
@@ -72,6 +73,11 @@ function sendTo2048() {
 }
 var game2048 = document.getElementById("2048");
 game2048.onclick = sendTo2048;
+
+// flappy bird
+document.getElementById("flappy-bird").onclick = (function () {
+   window.location.href = "flappy-bird/index.html"
+});
 
 //welcome
 /*

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html id="html">
+<head>
+    <meta charset="utf-8" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            text-align: center;
+            color: white;
+        }
+        h1 {
+            font-size: 100px;
+        }
+        h2 {
+            font-size: 50px;
+            margin-bottom: 3%;
+        }
+        div.start {
+            font-size: 50px;
+            height: 10%;
+            width: 25%;
+            float: center;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2%;
+            border: 1px solid black;
+            padding: 5%;
+        }
+        div.easy {
+            background-image: linear-gradient(green, limegreen);
+            border: 10px solid black;
+            color: darkblue;
+        }
+        div.medium {
+            background-image: linear-gradient(orangered, orange);
+            color: darkblue;
+        }
+        div.hard {
+            background-image: linear-gradient(darkred, red);
+            color: darkblue;
+        }
+        canvas {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+        form, div {
+            margin: 0 auto;
+            width:250px;
+        }
+        canvas.game, form.game, div.game {
+            display: none;
+        }
+    </style>
+</head>
+
+<!--Game-->
+<body>
+<title>Flappy Bird</title> 
+<h1 id="title"> Flappy Bird </h1>
+<h2 id="score"> Score: 0 </h2>
+<canvas class="game" id="canvas" style="border: 1px solid"> </canvas>
+
+<!-- import code in order. -->
+<script type="text/javascript" src="utils.js"></script>
+<script type="text/javascript" src="handler.js"></script>
+<script type="text/javascript" src="game_objects.js"></script>
+<script type="text/javascript" src="main.js"></script>
+<script type="text/javascript">
+function init() {
+    // https://www.w3schools.com/colors/colors_picker.asp
+
+    // init canvas and background
+    document.getElementById("canvas").width = WIDTH.toString(10);
+    document.getElementById("canvas").height = HEIGHT.toString(10);
+    document.getElementById("canvas").style.display = "initial";
+    document.getElementById("canvas").style.background = "rgb(0, 204, 255)";
+    document.getElementById("html").style.background = 'rgb(51, 102, 153)';
+}
+init()
+main()
+</script>
+</body>
+</html>
