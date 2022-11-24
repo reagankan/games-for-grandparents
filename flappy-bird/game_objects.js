@@ -109,6 +109,41 @@ class Bird extends Movable(Empty) {
     }
 }
 
+class Ground extends Movable(Empty) {
+    constructor() {
+        super()
+        this.reset_xy()
+        this.set_dxdy(-DX, 0);
+        this.init_images();
+    }
+    init_images() {
+        this.img = new Image();
+        this.img.src = "imgs/ground.png";
+    }
+    reset_xy() {
+        this.x = 0
+    }
+    draw() {
+        ctx.drawImage(this.img, this.x, BLOCK_SIZE * (HEIGHT_IN_BLOCKS - 1), WIDTH*2, BLOCK_SIZE);
+    }
+    restart() {
+        return this.x <= -WIDTH;
+    }
+    move() {
+        super.move()
+        if (this.restart()) {
+            this.reset_xy()
+        }
+    }
+    update() {
+        this.move()
+        this.draw()
+    }
+    stop() {
+        this.set_dx(0)
+    }
+}
+
 class PipeV1 extends Movable(Empty) {
     constructor() {
         super()
@@ -194,8 +229,8 @@ class PipeV2 extends Movable(Empty) {
             ctx.drawImage(this.body, this.x, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }
         ctx.drawImage(this.down, this.x, this.y-BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-        ctx.drawImage(this.up, this.x, this.y+BLOCK_SIZE*2, BLOCK_SIZE, BLOCK_SIZE);
-        for (let y = this.yi+3; y < HEIGHT_IN_BLOCKS; y++) {
+        ctx.drawImage(this.up, this.x, this.y+BLOCK_SIZE*3, BLOCK_SIZE, BLOCK_SIZE);
+        for (let y = this.yi+4; y < HEIGHT_IN_BLOCKS-1; y++) {
             ctx.drawImage(this.body, this.x, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }
     }
@@ -231,7 +266,7 @@ class PipeV2 extends Movable(Empty) {
             bottom: {
                 left:   this.x,
                 right:  this.x+BLOCK_SIZE,
-                top:    this.y+BLOCK_SIZE*2,
+                top:    this.y+BLOCK_SIZE*3,
                 bottom: canvas.height*2,
             }
               
@@ -281,7 +316,7 @@ class TwoPipes {
     }
     bound(val) {
         val = Math.max(val, 1)
-        val = Math.min(val, HEIGHT_IN_BLOCKS-3)
+        val = Math.min(val, HEIGHT_IN_BLOCKS-5)
         return val
     }
     stop() {

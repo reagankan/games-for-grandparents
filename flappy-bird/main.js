@@ -3,8 +3,10 @@ var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext("2d");
 let bird = new Bird(canvas.width, canvas.height);
 let pipes = new TwoPipes();
+let ground = new Ground();
 let background = new Image();
 background.src = "imgs/background.png";
+
 
 // score
 var score_element = document.getElementById("score");
@@ -24,15 +26,15 @@ function gameOver(bird, pipes) {
 function main() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
-
+    ground.update()
     bird.update()
-
     pipes.update()
 
     // drawRedRect({top:0, left:0, right:canvas.width, bottom:canvas.height})
     // drawBoundaries(bird, pipes)
     if (gameOver(bird, pipes)) {
         pipes.stop()
+        ground.stop()
     }
 }
 
