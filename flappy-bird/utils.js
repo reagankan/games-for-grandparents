@@ -49,3 +49,9 @@ function drawBoundaries(bird, pipes) {
     drawGreenRect(pipeRects.top);
     drawGreenRect(pipeRects.bottom);
 }
+
+function createImage(src) {
+	let img = new Image();
+    img.src = src
+    return img
+}

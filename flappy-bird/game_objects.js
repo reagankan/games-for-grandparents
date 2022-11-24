@@ -55,15 +55,13 @@ class Bird extends Movable(Empty) {
         this.w = 50
         this.h = 50
         this.stop = false;
+        this.interval = false;
     }
 
     init_images() {
-        this.up = new Image();
-        this.up.src = "imgs/bird-up.png"
-        this.mid = new Image();
-        this.mid.src = "imgs/bird-mid.png"
-        this.down = new Image();
-        this.down.src = "imgs/bird-down.png"
+        this.up = createImage("imgs/bird-up.png");
+        this.mid = createImage("imgs/bird-mid.png");
+        this.down = createImage("imgs/bird-down.png");
         this.images = [this.up, this.mid, this.down]
         this.image_index = 0
         this.frame = 0
@@ -76,6 +74,12 @@ class Bird extends Movable(Empty) {
         } 
         ctx.drawImage(this.images[this.image_index], this.x, this.y, this.w, this.h);
         this.frame += 1
+        if (this.stop && this.interval) {
+            console.log("clearing interval", this.interval);
+            clearInterval(this.interval)
+            this.interval = null;
+            console.log("bird cleared interval", this.interval);
+        }
     }
 
     move() {
@@ -119,6 +123,16 @@ class Bird extends Movable(Empty) {
           bottom: this.y+this.h,
         };
     }
+
+    setInterval(interval) {
+        if (this.interval === false) {
+            this.interval = interval
+        }
+    }
+
+    getInterval() {
+        return this.interval;
+    }
 }
 
 class Ground extends Movable(Empty) {
@@ -129,8 +143,7 @@ class Ground extends Movable(Empty) {
         this.init_images();
     }
     init_images() {
-        this.img = new Image();
-        this.img.src = "imgs/ground.png";
+        this.img = createImage("imgs/ground.png");
     }
     reset_xy() {
         this.x = 0
@@ -165,14 +178,9 @@ class PipeV1 extends Movable(Empty) {
     }
 
     init_images() {
-        this.up = new Image();
-        this.up.src = "imgs/pipe-up.png"
-
-        this.down = new Image();
-        this.down.src = "imgs/pipe-down.png"
-
-        this.body = new Image();
-        this.body.src = "imgs/pipe-body.png"
+        this.up = createImage("imgs/pipe-up.png");
+        this.down = createImage("imgs/pipe-down.png");
+        this.body = createImage("imgs/pipe-body.png");
     }
 
     reset_xy() {
@@ -226,14 +234,9 @@ class PipeV2 extends Movable(Empty) {
     }
 
     init_images() {
-        this.up = new Image();
-        this.up.src = "imgs/pipe-up.png"
-
-        this.down = new Image();
-        this.down.src = "imgs/pipe-down.png"
-
-        this.body = new Image();
-        this.body.src = "imgs/pipe-body.png"
+        this.up = createImage("imgs/pipe-up.png");
+        this.down = createImage("imgs/pipe-down.png");
+        this.body = createImage("imgs/pipe-body.png");
     }
     
     draw(doDraw) {

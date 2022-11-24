@@ -8,6 +8,9 @@ var maxMult = 2;
 var minMult = 1;
 
 function keyDownHandler(e) {
+    if (KEYS_LOCKED) {
+        return;
+    }
     // disallow double tap
     // if (e.key ==  " " && (Date.now() - lastTap) > tapTimeout){
     //     tap = true;

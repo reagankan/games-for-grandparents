@@ -4,8 +4,16 @@ var ctx = canvas.getContext("2d");
 let bird = new Bird(canvas.width, canvas.height);
 let pipes = new TwoPipes();
 let ground = new Ground();
-let background = new Image();
-background.src = "imgs/background.png";
+let background = createImage("imgs/background.png");
+
+function showGameOverPanel(gameOver) {
+    if (!gameOver) {
+        return;
+    }
+    let y0 = BLOCK_SIZE * 2;
+    let h = BLOCK_SIZE;
+    ctx.drawImage(createImage("imgs/game-over.png"), 0, y0, canvas.width, h);
+}
 
 
 // score
@@ -23,19 +31,27 @@ function gameOver(bird, pipes) {
     return intersectRect(birdRect, pipeRects.top) || intersectRect(birdRect, pipeRects.bottom)
 }
 
+
 function main() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
-    ground.update()
-    bird.update()
-    pipes.update()
+    let interval = setInterval(function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
+        ground.update()
+        pipes.update()
+        bird.update()
 
-    // drawRedRect({top:0, left:0, right:canvas.width, bottom:canvas.height})
-    // drawBoundaries(bird, pipes)
-    if (gameOver(bird, pipes)) {
-        pipes.stop()
-        ground.stop()
-    }
+        // drawRedRect({top:0, left:0, right:canvas.width, bottom:canvas.height})
+        // drawBoundaries(bird, pipes)
+        if (gameOver(bird, pipes)) {
+            pipes.stop()
+            ground.stop()
+            KEYS_LOCKED = true
+            bird.setInterval(interval)
+        }
+    }, 20);
+
+    setInterval(function() {
+        let gameOver = bird.getInterval() === null;
+        showGameOverPanel(gameOver)
+    }, 10)
 }
-
-setInterval(main, 20);
