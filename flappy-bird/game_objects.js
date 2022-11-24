@@ -54,6 +54,7 @@ class Bird extends Movable(Empty) {
         this.t = 0;
         this.w = 50
         this.h = 50
+        this.stop = false;
     }
 
     init_images() {
@@ -70,7 +71,7 @@ class Bird extends Movable(Empty) {
     }
 
     draw() {
-        if (this.frame % this.update_rate == 0) {
+        if (!this.stop && this.frame % this.update_rate == 0) {
             this.image_index = (this.image_index + 1) % this.images.length
         } 
         ctx.drawImage(this.images[this.image_index], this.x, this.y, this.w, this.h);
@@ -78,6 +79,9 @@ class Bird extends Movable(Empty) {
     }
 
     move() {
+        if (this.stop) {
+            return;
+        }
         // start flying 
         if (tap) {
             this.t0 = this.t
@@ -95,8 +99,16 @@ class Bird extends Movable(Empty) {
     }
 
     update() {
+        if (this.isOnFloor()) {
+            this.set_dy(0);
+            this.stop = true;
+        }
         this.move()
         this.draw()
+    }
+
+    isOnFloor() {
+        return this.y+this.h >= (HEIGHT_IN_BLOCKS-1)*BLOCK_SIZE
     }
 
     getCollisionRectangle() {
