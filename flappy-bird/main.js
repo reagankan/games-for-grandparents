@@ -15,9 +15,28 @@ function showGameOverPanel(gameOver) {
     if (!gameOver) {
         return;
     }
-    let y0 = BLOCK_SIZE * 2;
+
+    // draw "Game Over" text
+    let w = canvas.width;
     let h = BLOCK_SIZE;
-    ctx.drawImage(createImage("imgs/game-over.png"), 0, y0, canvas.width, h);
+    let x = 0;
+    let y = BLOCK_SIZE * 3;
+    ctx.drawImage(createImage("imgs/game-over.png"), x, y, w, h);
+
+    // draw score card
+    w = canvas.width/3;
+    h = BLOCK_SIZE * 1.5;
+    x = canvas.width/2 - w/2;
+    y = BLOCK_SIZE * 5
+    ctx.drawImage(createImage("imgs/score-card-2.png"), x, y, w, h);
+    drawScore(score, y + BLOCK_SIZE * 0.65, true)
+
+    // draw restart button
+    w = canvas.width * 0.4;
+    h = BLOCK_SIZE;
+    x = canvas.width/2 - w/2;
+    y = BLOCK_SIZE * 7
+    ctx.drawImage(createImage("imgs/play-button.png"), x, y, w, h);
 }
 
 
@@ -26,9 +45,11 @@ var score = 0;
 function update_score(pts) {
     score += pts;
 }
-function drawScore(score) {
+function drawScore(score, y=BLOCK_SIZE*2, smallFont=false) {
+    const blockSize = smallFont ? BLOCK_SIZE * 0.7 : BLOCK_SIZE
     if (score < 10) {
-        drawDigit(score, canvas.width/2 - BLOCK_SIZE/2, BLOCK_SIZE)
+        let x = canvas.width/2 - blockSize/2;
+        drawDigit(score, x, y, blockSize, blockSize)
     } else {
         let digits = [];
         while (score !== 0) {
@@ -37,20 +58,20 @@ function drawScore(score) {
         }
 
         let numDigits = digits.length;
-        let totalWidth = BLOCK_SIZE * numDigits;
+        let totalWidth = blockSize * numDigits;
         let digitWidth = totalWidth / numDigits;
         let xBase = canvas.width/2 - totalWidth/2;
         let i = 0;
         while (i < numDigits) {
             let digit = digits.pop();
-            drawDigit(digit, xBase + digitWidth * i, digitWidth);
+            let x = xBase + digitWidth * i;
+            drawDigit(digit, x, y, digitWidth, blockSize);
             i += 1;
         }
     }
 }
-function drawDigit(digit, x, width) {
-    let y = BLOCK_SIZE * 2;
-    ctx.drawImage(digitToImage.get(digit), x, y, BLOCK_SIZE, width);
+function drawDigit(digit, x, y, w, h) {
+    ctx.drawImage(digitToImage.get(digit), x, y, w, h);
 }
 
 
