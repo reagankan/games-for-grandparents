@@ -54,6 +54,14 @@
         canvas.game, form.game, div.game {
             display: none;
         }
+        /*lock screen*/
+        html.-is-locked {
+            overflow: hidden !important;
+        }
+        /*disable double tap zoom*/
+        html.disable-dbl-tap-zoom {
+          touch-action: manipulation;
+        }
     </style>
 </head>
 
@@ -62,6 +70,13 @@
 <title>Flappy Bird</title> 
 <h1 id="title"> Flappy Bird </h1>
 <canvas class="game" id="canvas" style="border: 1px solid"> </canvas>
+
+<!-- lock screen & disable double tap zoom -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    html.classList.add('-is-locked');
+    html.classList.add('disable-dbl-tap-zoom');
+</script>
 
 <!-- import code in order. -->
 <script type="text/javascript" src="utils.js"></script>
