@@ -330,7 +330,7 @@ class TwoPipes {
         
     }
     bound(val) {
-        val = Math.max(val, 1)
+        val = Math.max(val, 2)
         val = Math.min(val, HEIGHT_IN_BLOCKS-5)
         return val
     }

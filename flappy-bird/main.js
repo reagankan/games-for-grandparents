@@ -6,6 +6,11 @@ let pipes = new TwoPipes();
 let ground = new Ground();
 let background = createImage("imgs/background.png");
 
+const digitToImage = new Map();
+for (let i = 0; i < 10; i++) {
+    digitToImage.set(i, createImage("imgs/" + i.toString() + ".png"));
+}
+
 function showGameOverPanel(gameOver) {
     if (!gameOver) {
         return;
@@ -17,11 +22,35 @@ function showGameOverPanel(gameOver) {
 
 
 // score
-var score_element = document.getElementById("score");
 var score = 0;
 function update_score(pts) {
     score += pts;
-    score_element.innerText = "Score: " + Math.ceil(score);
+}
+function drawScore(score) {
+    if (score < 10) {
+        drawDigit(score, canvas.width/2 - BLOCK_SIZE/2, BLOCK_SIZE)
+    } else {
+        let digits = [];
+        while (score !== 0) {
+            digits.push(score % 10);
+            score = Math.floor(score / 10);
+        }
+
+        let numDigits = digits.length;
+        let totalWidth = BLOCK_SIZE * numDigits;
+        let digitWidth = totalWidth / numDigits;
+        let xBase = canvas.width/2 - totalWidth/2;
+        let i = 0;
+        while (i < numDigits) {
+            let digit = digits.pop();
+            drawDigit(digit, xBase + digitWidth * i, digitWidth);
+            i += 1;
+        }
+    }
+}
+function drawDigit(digit, x, width) {
+    let y = BLOCK_SIZE * 2;
+    ctx.drawImage(digitToImage.get(digit), x, y, BLOCK_SIZE, width);
 }
 
 
@@ -71,6 +100,8 @@ function main() {
             ground.stop()
             KEYS_LOCKED = true
             bird.setInterval(interval)
+        } else {
+            drawScore(Math.ceil(score));
         }
     }, 20);
 
