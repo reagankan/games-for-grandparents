@@ -349,7 +349,7 @@ class TwoPipes {
         };
     }
 
-    getCollisionRectangles(bird) {
+    getClosestPipeFront(bird) {
         let closestPipe = null;
         let minDist = 1e10;
         for (let p of this.pipes) {
@@ -359,6 +359,24 @@ class TwoPipes {
                 minDist = dist;
             }
         }
+        return closestPipe;
+    }
+
+    getClosestPipeBack(bird) {
+        let closestPipe = null;
+        let minDist = 1e10;
+        for (let p of this.pipes) {
+            let dist = Math.abs(bird.x - p.x);
+            if (dist < minDist) {
+                closestPipe = p;
+                minDist = dist;
+            }
+        }
+        return closestPipe;
+    }
+
+    getCollisionRectangles(bird) {
+        let closestPipe = this.getClosestPipeFront(bird);
         return closestPipe.getCollisionRectangles();
     }
 }

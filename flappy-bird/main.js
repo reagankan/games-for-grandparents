@@ -21,8 +21,31 @@ var score_element = document.getElementById("score");
 var score = 0;
 function update_score(pts) {
     score += pts;
-    score = Math.max(0, score);
-    score_element.innerText = "Score: " + score;
+    score_element.innerText = "Score: " + Math.ceil(score);
+}
+
+
+let DEBUG_SCORE = false;
+let prevPipeStatus = false;
+let currPipeStatus = false;
+function keep_score(bird, pipes) {
+    let pipeBack = pipes.getClosestPipeBack(bird);
+    let pipeFront = pipes.getClosestPipeFront(bird);
+
+
+    if (DEBUG_SCORE) {
+        drawRedRect(pipeBack.getCollisionRectangles().top)
+        drawGreenRect(pipeFront.getCollisionRectangles().top)
+    }
+
+    currPipeStatus = pipeBack !== pipeFront;
+    if (prevPipeStatus !== currPipeStatus) {
+        // Using pipeStatus will doublecount the score
+        // so add 0.5 points to the score each time
+        // and only show the ceiling of the score
+        update_score(0.5);
+    }
+    prevPipeStatus = currPipeStatus;
 }
 
 function gameOver(bird, pipes) {
@@ -39,6 +62,7 @@ function main() {
         ground.update()
         pipes.update()
         bird.update()
+        keep_score(bird, pipes)
 
         // drawRedRect({top:0, left:0, right:canvas.width, bottom:canvas.height})
         // drawBoundaries(bird, pipes)
