@@ -34,7 +34,14 @@ function keyUpHandler(e) {
     }
 }
 
+function touchStartHandler(e) {
+    if (!KEYS_LOCKED) {
+        tap = true;
+    }
+}
+
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
-document.addEventListener('touchstart', e => {tap=true})
+document.addEventListener('touchstart', touchStartHandler)
 document.addEventListener('touchend', e => {tap=false})
